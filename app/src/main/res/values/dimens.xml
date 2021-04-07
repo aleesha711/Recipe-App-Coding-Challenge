@@ -1,0 +1,59 @@
+<resources>
+    <dimen name="card_side_margin">4dp</dimen>
+    <dimen name="card_zero_margin">0dp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="appbar_padding">16dp</dimen>
+    <dimen name="appbar_padding_top">8dp</dimen>
+    <dimen name="login_logo_height">100dp</dimen>
+
+    <!-- text sizes -->
+    <dimen name="text_size_very_small">14sp</dimen>
+    <dimen name="text_size_small">16sp</dimen>
+    <dimen name="text_size_medium">18sp</dimen>
+    <dimen name="text_size_large">15sp</dimen>
+    <dimen name="text_size_semi_large">22sp</dimen>
+    <dimen name="text_size_very_large">24sp</dimen>
+    <dimen name="text_size_extra_large">32sp</dimen>
+    <dimen name="font_32sp">32sp</dimen>
+    <dimen name="font_16sp">16sp</dimen>
+    <dimen name="font_14sp">14sp</dimen>
+    <dimen name="font_22sp">22sp</dimen>
+    <dimen name="font_18sp">18sp</dimen>
+    <dimen name="font_20sp">20sp</dimen>
+    <dimen name="font_15sp">15sp</dimen>
+    <dimen name="font_12sp">12sp</dimen>
+    <dimen name="font_13sp">13sp</dimen>
+
+    <!-- layout sizes -->
+    <dimen name="unit_1x">4dp</dimen>
+    <dimen name="unit_2x">8dp</dimen>
+    <dimen name="unit_3x">16dp</dimen>
+    <dimen name="unit_4x">24dp</dimen>
+    <dimen name="unit_5x">32dp</dimen>
+    <dimen name="unit_6x">40dp</dimen>
+    <dimen name="unit_7x">48dp</dimen>
+    <dimen name="unit_8x">56dp</dimen>
+    <dimen name="unit_9x">64dp</dimen>
+    <dimen name="unit_10x">72dp</dimen>
+    <dimen name="unit_11x">80dp</dimen>
+    <dimen name="unit_7dp">7dp</dimen>
+
+    <!-- margins sizes -->
+    <dimen name="margin_1x">8dp</dimen>
+    <dimen name="margin_2x">16dp</dimen>
+    <dimen name="margin_3x">24dp</dimen>
+    <dimen name="margin_4x">32dp</dimen>
+    <dimen name="margin_5x">40dp</dimen>
+    <dimen name="margin_6x">48dp</dimen>
+    <dimen name="margin_7x">56dp</dimen>
+    <dimen name="margin_8x">64dp</dimen>
+    <dimen name="margin_9x">72dp</dimen>
+    <dimen name="margin_10x">80dp</dimen>
+    <dimen name="margin_16x">128dp</dimen>
+    <dimen name="margin_12dp">12dp</dimen>
+    <dimen name="margin_160dp">160dp</dimen>
+    <dimen name="margin_2dp">2dp</dimen>
+</resources>

@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">RecipeJoy</string>
+    <string name="recipe_description">Recipe Description</string>
+    <string name="recipe_title">Recipe Title</string>
+    <string name="images">Images</string>
+    <string name="your_recipes">Your Recipes</string>
+    <string name="add_recipe">Add Recipe</string>
+    <string name="save_error_msg">Please fill out all the details</string>
+    <string name="allow_permission_msg">Please allow storage permissions from app settings</string>
+    <string name="delete_confirmation">Are you sure you want to delete?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="successfully_added">Successfully recipe has been added</string>
+</resources>

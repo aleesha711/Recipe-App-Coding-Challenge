@@ -1,0 +1,44 @@
+package com.recipe.app.features.home.views.adapter
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.recipe.app.R
+import com.recipe.app.db.entity.Recipe
+import com.recipe.app.features.home.views.adapter.HomeAdapter.ViewHolder
+import kotlinx.android.synthetic.main.recipe_item.view.*
+
+class HomeAdapter : ListAdapter<Recipe, ViewHolder>(DiffCallback()) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val itemView = LayoutInflater.from(parent.context)
+                .inflate(R.layout.recipe_item, parent, false)
+        return ViewHolder(itemView)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val currentRecipe = getItem(position)
+        holder.textViewTitle.text = currentRecipe.title
+        holder.textViewDescription.text = currentRecipe.description
+        holder.recyclerView.layoutManager = LinearLayoutManager(holder.recyclerView.context, LinearLayoutManager.HORIZONTAL, false)
+        holder.recyclerView.setHasFixedSize(true)
+        val adapter = RecipeImageAdapter(currentRecipe.images)
+        holder.recyclerView.adapter = adapter
+    }
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val textViewTitle: TextView = itemView.textViewTitle
+        val textViewDescription: TextView = itemView.textViewDescription
+        val recyclerView: RecyclerView = itemView.recyclerView
+    }
+
+    private class DiffCallback : DiffUtil.ItemCallback<Recipe>() {
+        override fun areItemsTheSame(oldItem: Recipe, newItem: Recipe) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: Recipe, newItem: Recipe) = oldItem.title == newItem.title && oldItem.description == newItem.description
+    }
+}

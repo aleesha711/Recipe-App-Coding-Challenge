@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".features.addrecipe.views.activity.AddRecipeActivity">
+
+    <include
+        android:id="@+id/toolBar"
+        layout="@layout/custom_toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_2x"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/StyleTextViewTitles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/recipe_title" />
+
+        <EditText
+            android:id="@+id/editTextTitle"
+            style="@style/StyleTextViewContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_1x"
+            android:autofillHints=""
+            android:paddingTop="@dimen/unit_2x"
+            android:paddingBottom="@dimen/unit_2x"
+            android:paddingEnd="@dimen/unit_1x"
+            android:paddingStart="@dimen/unit_1x"
+            android:background="@drawable/white_background_all_round"
+            android:inputType="text"
+            tools:ignore="LabelFor" />
+
+        <TextView
+            style="@style/StyleTextViewTitles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_1x"
+            android:text="@string/recipe_description" />
+
+        <EditText
+            android:id="@+id/editTextDescription"
+            style="@style/StyleTextViewContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_1x"
+            android:autofillHints=""
+            android:background="@drawable/white_background_all_round"
+            android:gravity="top|start"
+            android:inputType="textMultiLine"
+            android:paddingTop="@dimen/unit_2x"
+            android:paddingBottom="@dimen/unit_2x"
+            android:paddingEnd="@dimen/unit_1x"
+            android:paddingStart="@dimen/unit_1x"
+            android:lines="8"
+            android:maxLines="10"
+            android:minLines="6"
+            android:scrollbars="vertical"
+            tools:ignore="LabelFor" />
+
+        <TextView
+            style="@style/StyleTextViewTitles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_1x"
+            android:text="@string/images" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none" />
+    </LinearLayout>
+</LinearLayout>
