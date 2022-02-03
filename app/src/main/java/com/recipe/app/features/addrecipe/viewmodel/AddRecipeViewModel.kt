@@ -186,7 +186,6 @@ class AddRecipeViewModel : ViewModel() {
         val imageModel = Recipe()
         if (filePath != null) {
             imageModel.uri = filePath
-            currentPhotoPath = filePath
         }
         imageList.value?.add(SELECTED_IMAGES_INDEX, imageModel)
         filePath?.let { selectedImageList.add(it) }
@@ -201,7 +200,7 @@ class AddRecipeViewModel : ViewModel() {
                     imageList.value?.removeAt(pos)
                 }
             }
-            addImage(filePath!!)
+            addImage(filePath)
         }
     }
 

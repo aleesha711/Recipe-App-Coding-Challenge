@@ -13,7 +13,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.recipe.app.R
-import com.recipe.app.constants.RecipeConstants.ADD_RECIPE_REQUEST
 import com.recipe.app.constants.RecipeConstants.EXTRA_DESCRIPTION
 import com.recipe.app.constants.RecipeConstants.EXTRA_IMAGES
 import com.recipe.app.constants.RecipeConstants.EXTRA_TITLE
