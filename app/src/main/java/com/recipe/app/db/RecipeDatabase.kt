@@ -10,8 +10,7 @@ import com.recipe.app.db.dao.RecipeDao
 import com.recipe.app.db.entity.Recipe
 import com.recipe.app.typeconverters.Converters
 
-
-@Database(entities = [Recipe::class], version = 1)
+@Database(entities = [Recipe::class], version = 1, exportSchema = false)
 @TypeConverters(*[Converters::class])
 abstract class RecipeDatabase : RoomDatabase() {
 
@@ -20,14 +19,14 @@ abstract class RecipeDatabase : RoomDatabase() {
     companion object {
         private var instance: RecipeDatabase? = null
 
-        fun getInstance(context: Context): RecipeDatabase {
+        fun getDatabase(context: Context): RecipeDatabase {
             if (instance == null) {
                 synchronized(RecipeDatabase::class) {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
-                            RecipeDatabase::class.java, "recipe_database"
+                        RecipeDatabase::class.java, "recipe_database"
                     ).fallbackToDestructiveMigration()
-                        .addCallback(Companion.roomCallback)
+                        .addCallback(roomCallback)
                         .build()
                 }
             }
@@ -37,6 +36,5 @@ abstract class RecipeDatabase : RoomDatabase() {
         private val roomCallback = object : RoomDatabase.Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) = super.onCreate(db)
         }
-
     }
 }

@@ -20,8 +20,16 @@
 
     <style name="StyleTextViewContent">
         <item name="android:textStyle">normal</item>
-        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textSize">@dimen/text_size_very_small</item>
         <item name="android:textColor">@color/colorText</item>
+    </style>
+
+    <style name="AppTheme.Splash">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
+
+    <style name="Toolbar.White.Back" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="colorOnPrimary">@color/colorWhite</item>
     </style>
 
 </resources>

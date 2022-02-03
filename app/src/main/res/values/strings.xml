@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">RecipeJoy</string>
-    <string name="recipe_description">Recipe Description</string>
-    <string name="recipe_title">Recipe Title</string>
+    <string name="recipe_description">How would you explain it?</string>
+    <string name="recipe_title">What you like to call it?</string>
     <string name="images">Images</string>
     <string name="your_recipes">Your Recipes</string>
     <string name="add_recipe">Add Recipe</string>

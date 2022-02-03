@@ -5,62 +5,70 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.recipe.app.R
 import com.recipe.app.constants.RecipeConstants.ADD_RECIPE_REQUEST
 import com.recipe.app.constants.RecipeConstants.EXTRA_DESCRIPTION
 import com.recipe.app.constants.RecipeConstants.EXTRA_IMAGES
 import com.recipe.app.constants.RecipeConstants.EXTRA_TITLE
+import com.recipe.app.databinding.ActivityHomeBinding
 import com.recipe.app.db.entity.Recipe
 import com.recipe.app.features.addrecipe.views.activity.AddRecipeActivity
 import com.recipe.app.features.home.viewmodel.HomeViewModel
 import com.recipe.app.features.home.views.adapter.HomeAdapter
-import kotlinx.android.synthetic.main.activity_home.*
+import com.recipe.app.features.home.views.adapter.RecipeImageAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
-    private var homeViewModel: HomeViewModel? = null
+
+    private val binding by viewBinding(ActivityHomeBinding::bind)
+    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        val adapter = setupRecyclerview()
-
-        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-        homeViewModel?.getAllRecipes()?.observe(this, Observer { recipes -> adapter.submitList(recipes) })
         setUpToolBar()
+        val adapter = setupRecyclerview()
+        homeViewModel.getAllRecipes().observe(this, { recipes -> adapter.submitList(recipes) })
     }
 
     private fun setUpToolBar() {
-        val toolBar = findViewById<Toolbar>(R.id.toolBar)
-        setSupportActionBar(toolBar)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
-        val toolBarTextView = toolBar.findViewById(R.id.toolbarTitle) as TextView
-        toolBarTextView.text = resources.getString(R.string.your_recipes)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.title = resources.getString(R.string.your_recipes)
+        setSupportActionBar(toolbar)
     }
 
     private fun setupRecyclerview(): HomeAdapter {
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.setHasFixedSize(true)
-        val adapter = HomeAdapter()
-        recyclerView.adapter = adapter
+        val recipeImageAdapter = RecipeImageAdapter(this@HomeActivity)
+        val adapter = HomeAdapter(recipeImageAdapter)
+        with(binding) {
+            recyclerView.layoutManager = LinearLayoutManager(this@HomeActivity)
+            recyclerView.setHasFixedSize(true)
+            recyclerView.adapter = adapter
+        }
         return adapter
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == ADD_RECIPE_REQUEST && resultCode == Activity.RESULT_OK  && data != null) {
-            val item = Recipe(
-                    data.getStringExtra(EXTRA_TITLE),
-                    data.getStringExtra(EXTRA_DESCRIPTION),
-                    images = data.getStringArrayListExtra(EXTRA_IMAGES)
-            )
-            homeViewModel?.insert(item)
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            val item = data?.getStringExtra(EXTRA_DESCRIPTION)?.let {
+                data.getStringArrayListExtra(EXTRA_IMAGES)?.let { uriList ->
+                    Recipe(
+                        data.getStringExtra(EXTRA_TITLE)!!,
+                        it,
+                        images = uriList
+                    )
+                }
+            }
+            item?.let { homeViewModel.insert(it) }
             Toast.makeText(this, getString(R.string.successfully_added), Toast.LENGTH_SHORT).show()
         }
     }
@@ -75,7 +83,7 @@ class HomeActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.addRecipe -> {
                 val intent = Intent(this@HomeActivity, AddRecipeActivity::class.java)
-                startActivityForResult(intent, ADD_RECIPE_REQUEST)
+                resultLauncher.launch(intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)

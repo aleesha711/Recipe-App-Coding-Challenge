@@ -54,6 +54,6 @@
     <dimen name="margin_10x">80dp</dimen>
     <dimen name="margin_16x">128dp</dimen>
     <dimen name="margin_12dp">12dp</dimen>
-    <dimen name="margin_160dp">160dp</dimen>
+    <dimen name="margin_160dp">120dp</dimen>
     <dimen name="margin_2dp">2dp</dimen>
 </resources>

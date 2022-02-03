@@ -5,11 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "recipe_table")
 data class Recipe(
-        var title: String = "",
-        var description: String = "",
-        var images: List<String> = ArrayList(),
-        var uri: String = "",
-        var resImg: Int = 0
+    var title: String = "",
+    var description: String = "",
+    var images: List<String> = ArrayList(),
+    var uri: String = ""
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

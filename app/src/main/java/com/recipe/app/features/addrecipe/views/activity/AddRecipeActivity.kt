@@ -7,65 +7,108 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.recipe.app.R
+import com.recipe.app.databinding.ActivityAddRecipeBinding
 import com.recipe.app.features.addrecipe.viewmodel.AddRecipeViewModel
-import com.recipe.app.features.addrecipe.views.adapter.ImageAdapter
-import kotlinx.android.synthetic.main.activity_add_recipe.*
+import com.recipe.app.features.addrecipe.views.adapter.AddRecipeAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
-class AddRecipeActivity : AppCompatActivity(), ImageAdapter.OnItemClickListener {
+@AndroidEntryPoint
+class AddRecipeActivity : AppCompatActivity(), AddRecipeAdapter.OnItemClickListener {
 
-    private var addRecipeViewModel: AddRecipeViewModel? = null
-    private var imageAdapter: ImageAdapter? = null
+    private val addRecipeViewModel: AddRecipeViewModel by viewModels()
+    private val binding by viewBinding(ActivityAddRecipeBinding::bind)
+    private var addRecipeAdapter: AddRecipeAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_recipe)
-        addRecipeViewModel = ViewModelProvider(this).get(AddRecipeViewModel::class.java)
         setUpToolBar()
-
-        addRecipeViewModel?.status?.observe(this, Observer { status ->
-            status?.let {
-                addRecipeViewModel?.status!!.value = null
-                Toast.makeText(this, getString(R.string.save_error_msg), Toast.LENGTH_SHORT).show()
-            }
-        })
-
-        addRecipeViewModel?.permissionDenied?.observe(this, Observer { permission ->
-            permission?.let {
-                addRecipeViewModel?.permissionDenied!!.value = null
-                Toast.makeText(this, getString(R.string.allow_permission_msg), Toast.LENGTH_SHORT).show()
-            }
-        })
-
-        addRecipeViewModel?.getRecipeToSave?.observe(this, Observer { data ->
-            setResult(Activity.RESULT_OK, data)
-            finish()
-        })
-
         setImageList()
-
-        addRecipeViewModel?.imagePickerListAdded?.observe(this, Observer {
-            imageAdapter?.notifyDataSetChanged()
-        })
-        addRecipeViewModel?.imageList?.observe(this, Observer {
-            imageAdapter?.notifyDataSetChanged()
-        })
+        setupObservers()
     }
 
     private fun setUpToolBar() {
-        val toolBar = findViewById<Toolbar>(R.id.toolBar)
-        setSupportActionBar(toolBar)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
-        val toolBarTextView = toolBar.findViewById(R.id.toolbarTitle) as TextView
-        toolBarTextView.text = resources.getString(R.string.your_recipes)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.title = resources.getString(R.string.add_recipe)
+        setSupportActionBar(toolbar)
+        supportActionBar?.run {
+            setDisplayHomeAsUpEnabled(true)
+        }
+    }
+
+    private fun setImageList() {
+        addRecipeAdapter = AddRecipeAdapter(applicationContext, addRecipeViewModel.imageList.value!!)
+        addRecipeAdapter?.setOnItemClickListener(this)
+        with(binding) {
+            recyclerView.layoutManager = LinearLayoutManager(this@AddRecipeActivity, LinearLayoutManager.HORIZONTAL, false)
+            recyclerView.adapter = addRecipeAdapter
+        }
+    }
+
+    private fun setupObservers() {
+        addRecipeViewModel.recipeError.observe(
+            this,
+            Observer { status ->
+                status?.let {
+                    addRecipeViewModel.recipeError.value = null
+                    Toast.makeText(this, getString(R.string.save_error_msg), Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+
+        addRecipeViewModel.permissionDenied.observe(
+            this,
+            Observer { permission ->
+                permission?.let {
+                    addRecipeViewModel.permissionDenied.value = null
+                    Toast.makeText(this, getString(R.string.allow_permission_msg), Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+
+        addRecipeViewModel.recipeToSave.observe(
+            this,
+            { data ->
+                setResult(Activity.RESULT_OK, data)
+                finish()
+            }
+        )
+
+        addRecipeViewModel.imagePickerListAdded.observe(
+            this,
+            {
+                addRecipeAdapter?.notifyDataSetChanged()
+            }
+        )
+        addRecipeViewModel.imageList.observe(
+            this,
+            {
+                addRecipeAdapter?.notifyDataSetChanged()
+            }
+        )
+
+        addRecipeViewModel.addGalleryImage.observe(
+            this,
+            {
+                galleryLauncher.launch(it)
+            }
+        )
+
+        addRecipeViewModel.addCameraImage.observe(
+            this,
+            {
+                cameraLauncher.launch(it)
+            }
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -77,45 +120,44 @@ class AddRecipeActivity : AppCompatActivity(), ImageAdapter.OnItemClickListener 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.save_recipe -> {
-                addRecipeViewModel?.saveRecipe(editTextTitle?.text.toString(), editTextDescription?.text.toString(), intent)
+                addRecipeViewModel.saveRecipe(binding.editTextTitle.text.toString(), binding.editTextDescription.text.toString(), intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun setImageList() {
-        recyclerView?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        imageAdapter = ImageAdapter(applicationContext, addRecipeViewModel!!.imageList.value!!)
-        imageAdapter?.setOnItemClickListener(this)
-        recyclerView?.adapter = imageAdapter
-    }
-
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<String?>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        addRecipeViewModel?.openIntent(this, requestCode, grantResults, callBack = { pair ->
+        addRecipeViewModel.openIntent(this, requestCode, grantResults, callBack = { pair ->
             if (pair == null) {
                 setImageList()
             } else {
-                startActivityForResult(pair.first, pair.second)
+                addRecipeViewModel.addCameraGalleryImages(pair.first)
             }
         })
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            addRecipeViewModel?.addCameraGalleryImages(requestCode,data,contentResolver)
+    private val cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            addRecipeViewModel.addCameraImage()
+        }
+    }
+
+    private val galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            addRecipeViewModel.addGalleryImages(data, contentResolver)
         }
     }
 
     override fun onItemClick(position: Int, v: View?) {
-        addRecipeViewModel?.getIntentBasedOn(position, this)?.let { pair ->
-            startActivityForResult(pair.first, pair.second)
+        addRecipeViewModel.getIntentBasedOn(position, this)?.let { pair ->
+            addRecipeViewModel.addCameraGalleryImages(pair.first)
         }
     }
 
@@ -127,13 +169,13 @@ class AddRecipeActivity : AppCompatActivity(), ImageAdapter.OnItemClickListener 
 
         val dialogBuilder = AlertDialog.Builder(this)
         dialogBuilder.setMessage(getString(R.string.delete_confirmation))
-                .setCancelable(false)
-                .setPositiveButton(getString(R.string.delete)) { _, _ ->
-                    addRecipeViewModel?.unSelectImage(position)
-                    imageAdapter?.removeItem(position)
-                }.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-                    dialog.cancel()
-                }
+            .setCancelable(false)
+            .setPositiveButton(getString(R.string.delete)) { _, _ ->
+                addRecipeViewModel.unSelectImage(position)
+                addRecipeAdapter?.removeItem(position)
+            }.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.cancel()
+            }
         val alert = dialogBuilder.create()
         alert.show()
     }

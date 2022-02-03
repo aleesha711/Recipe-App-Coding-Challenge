@@ -7,25 +7,32 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.recipe.app.R
-import com.bumptech.glide.Glide
+import com.recipe.app.utility.image.ImageLoaderEntryPointAccessor
+import com.recipe.app.utility.image.abstraction.ImageLoader
+import com.recipe.app.utility.image.abstraction.ImageScaleType
 import kotlinx.android.synthetic.main.item_receipe_image.view.*
 
+class RecipeImageAdapter(context: Context) : RecyclerView.Adapter<RecipeImageAdapter.RecipeImageHolder>() {
+    private val imageLoader: ImageLoader = ImageLoaderEntryPointAccessor.access(context).imageLoaderBareBoneProvider()
+    private var images: List<String> = arrayListOf()
 
-class RecipeImageAdapter(private val images: List<String>) : RecyclerView.Adapter<RecipeImageAdapter.RecipeImageHolder>() {
-    private lateinit var context: Context
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeImageHolder {
         val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_receipe_image, parent, false)
-        context = parent.context
+            .inflate(R.layout.item_receipe_image, parent, false)
         return RecipeImageHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: RecipeImageHolder, position: Int) {
-        Glide.with(context)
-            .load(images[position])
-            .placeholder(R.color.colorPrimary)
-            .centerCrop()
-            .into(holder.imageView)
+        imageLoader.load(
+            holder.imageView,
+            images[position],
+            ImageScaleType.CENTER_CROP,
+            R.color.colorPrimary
+        )
+    }
+
+    fun setImages(images: List<String>) {
+        this.images = images
     }
 
     override fun getItemCount(): Int {
@@ -34,6 +41,5 @@ class RecipeImageAdapter(private val images: List<String>) : RecyclerView.Adapte
 
     inner class RecipeImageHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.imageView
-
     }
 }

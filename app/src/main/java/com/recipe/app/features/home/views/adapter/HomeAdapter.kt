@@ -11,13 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.recipe.app.R
 import com.recipe.app.db.entity.Recipe
 import com.recipe.app.features.home.views.adapter.HomeAdapter.ViewHolder
-import kotlinx.android.synthetic.main.recipe_item.view.*
+import kotlinx.android.synthetic.main.recyclerview_recipe_item.view.*
 
-class HomeAdapter : ListAdapter<Recipe, ViewHolder>(DiffCallback()) {
+class HomeAdapter(private val recipeImageAdapter: RecipeImageAdapter) : ListAdapter<Recipe, ViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.recipe_item, parent, false)
+            .inflate(R.layout.recyclerview_recipe_item, parent, false)
         return ViewHolder(itemView)
     }
 
@@ -27,8 +27,8 @@ class HomeAdapter : ListAdapter<Recipe, ViewHolder>(DiffCallback()) {
         holder.textViewDescription.text = currentRecipe.description
         holder.recyclerView.layoutManager = LinearLayoutManager(holder.recyclerView.context, LinearLayoutManager.HORIZONTAL, false)
         holder.recyclerView.setHasFixedSize(true)
-        val adapter = RecipeImageAdapter(currentRecipe.images)
-        holder.recyclerView.adapter = adapter
+        recipeImageAdapter.setImages(currentRecipe.images)
+        holder.recyclerView.adapter = recipeImageAdapter
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
