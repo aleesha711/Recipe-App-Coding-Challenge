@@ -11,9 +11,5 @@ class SplashActivity : Activity() {
         super.onCreate(savedInstanceState)
         startActivity(Intent(this, HomeActivity::class.java))
     }
-
-    //TODO
-    //3. add unit testcases
-    //fix database
 }
     
