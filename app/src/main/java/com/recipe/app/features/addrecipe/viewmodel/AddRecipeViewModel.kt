@@ -243,10 +243,10 @@ class AddRecipeViewModel : ViewModel() {
         recipeToSave.value = data
     }
 
-    internal fun addCameraGalleryImages(intent: Intent) {
+    internal fun observeCameraOrGalleryIntent(intent: Intent) {
         if (intent.action == ACTION_IMAGE_CAPTURE) {
             addCameraImage.value = intent
-        } else if(intent.action == Intent.ACTION_OPEN_DOCUMENT) {
+        } else if (intent.action == Intent.ACTION_OPEN_DOCUMENT) {
             addGalleryImage.value = intent
         }
     }

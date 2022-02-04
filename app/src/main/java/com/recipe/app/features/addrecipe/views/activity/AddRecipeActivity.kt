@@ -137,7 +137,7 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeAdapter.OnItemClickListe
             if (pair == null) {
                 setImageList()
             } else {
-                addRecipeViewModel.addCameraGalleryImages(pair.first)
+                addRecipeViewModel.observeCameraOrGalleryIntent(pair.first)
             }
         })
     }
@@ -157,7 +157,7 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeAdapter.OnItemClickListe
 
     override fun onItemClick(position: Int, v: View?) {
         addRecipeViewModel.getIntentBasedOn(position, this)?.let { pair ->
-            addRecipeViewModel.addCameraGalleryImages(pair.first)
+            addRecipeViewModel.observeCameraOrGalleryIntent(pair.first)
         }
     }
 
