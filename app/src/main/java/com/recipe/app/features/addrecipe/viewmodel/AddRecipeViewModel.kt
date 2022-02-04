@@ -139,7 +139,7 @@ class AddRecipeViewModel : ViewModel() {
 
         for (i in placeholderIcons.indices) {
             val imageModel = Recipe()
-           // imageModel.resImg = placeholderIcons[i]
+            imageModel.imageSource = placeholderIcons[i]
             imageModel.title = chooserTitle[i]
             placeholderList.add(imageModel)
         }

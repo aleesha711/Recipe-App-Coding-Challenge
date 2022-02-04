@@ -11,6 +11,6 @@ interface RecipeDao {
     @Insert
     suspend fun insert(recipe: Recipe?)
 
-    @Query("SELECT * FROM recipe_table ")
+    @Query("SELECT * FROM recipe")
     fun getAllRecipes(): LiveData<List<Recipe>>
 }

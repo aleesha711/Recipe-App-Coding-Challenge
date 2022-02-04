@@ -43,7 +43,7 @@ class AddRecipeAdapter(context: Context, private val imageList: ArrayList<Recipe
             )
         } else {
             val viewHolder = holder as ImagePickerViewHolder
-          //  viewHolder.image.setImageResource(imageList[position].resImg)
+            viewHolder.image.setImageResource(imageList[position].imageSource)
             viewHolder.title.text = imageList[position].title
         }
     }
