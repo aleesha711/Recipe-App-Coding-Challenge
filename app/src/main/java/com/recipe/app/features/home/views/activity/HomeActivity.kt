@@ -35,7 +35,8 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
         setUpToolBar()
         val adapter = setupRecyclerview()
-        homeViewModel.getAllRecipes().observe(this, { recipes -> adapter.submitList(recipes) })
+        homeViewModel.recipes.observe(this, { recipes -> adapter.submitList(recipes) })
+        homeViewModel.newRecipe.observe(this, { recipe -> adapter.addNewRecipe(recipe) })
     }
 
     private fun setUpToolBar() {

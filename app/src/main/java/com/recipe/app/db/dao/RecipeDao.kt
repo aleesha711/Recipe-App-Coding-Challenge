@@ -1,6 +1,5 @@
 package com.recipe.app.db.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -12,5 +11,5 @@ interface RecipeDao {
     suspend fun insert(recipe: Recipe?)
 
     @Query("SELECT * FROM recipe")
-    fun getAllRecipes(): LiveData<List<Recipe>>
+    suspend fun getAllRecipes(): List<Recipe>
 }

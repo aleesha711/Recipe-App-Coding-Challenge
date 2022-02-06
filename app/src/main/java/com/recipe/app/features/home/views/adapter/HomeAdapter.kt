@@ -31,6 +31,14 @@ class HomeAdapter(private val recipeImageAdapter: RecipeImageAdapter) : ListAdap
         holder.recyclerView.adapter = recipeImageAdapter
     }
 
+
+    fun addNewRecipe(recipe: Recipe) {
+        val newRecipesList = mutableListOf<Recipe>()
+        newRecipesList.addAll(currentList)
+        newRecipesList.add(recipe)
+        submitList(newRecipesList)
+    }
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textViewTitle: TextView = itemView.textViewTitle
         val textViewDescription: TextView = itemView.textViewDescription
