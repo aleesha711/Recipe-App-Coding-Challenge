@@ -1,6 +1,5 @@
 package com.recipe.app.data
 
-import androidx.lifecycle.LiveData
 import com.recipe.app.data.datasource.RecipeLocalDataSource
 import com.recipe.app.db.entity.Recipe
 import dagger.Lazy
@@ -15,7 +14,7 @@ class RecipeRepositoryImpl @Inject constructor(
         recipeLocalDataSource.get().insert(recipe)
     }
 
-    override suspend fun getAllRecipes(): LiveData<List<Recipe>> {
+    override suspend fun getAllRecipes(): List<Recipe> {
         return recipeLocalDataSource.get().getAllRecipes()
     }
 }

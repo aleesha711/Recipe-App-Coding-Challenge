@@ -57,8 +57,8 @@ class AddRecipeAdapter(context: Context, private val imageList: ArrayList<Recipe
         private var imageViewDelete: ImageView = itemView.findViewById(R.id.imageViewDelete)
 
         init {
-            itemView.setOnClickListener { v -> onItemClickListener!!.onItemClick(adapterPosition, v) }
-            imageViewDelete.setOnClickListener { onItemClickListener!!.onItemDelete(adapterPosition) }
+            itemView.setOnClickListener { v -> onItemClickListener!!.onItemClick(absoluteAdapterPosition, v) }
+            imageViewDelete.setOnClickListener { onItemClickListener!!.onItemDelete(absoluteAdapterPosition) }
         }
     }
 
@@ -67,7 +67,7 @@ class AddRecipeAdapter(context: Context, private val imageList: ArrayList<Recipe
         var title: TextView = itemView.findViewById(R.id.title)
 
         init {
-            itemView.setOnClickListener { v -> onItemClickListener!!.onItemClick(adapterPosition, v) }
+            itemView.setOnClickListener { v -> onItemClickListener!!.onItemClick(absoluteAdapterPosition, v) }
         }
     }
 
