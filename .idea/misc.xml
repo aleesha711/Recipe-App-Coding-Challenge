@@ -10,7 +10,9 @@
         <entry key="app/src/main/res/drawable/splash_background.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_add_recipe.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_recipe_addition.xml" value="0.1716485507246377" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.19021739130434784" />
+        <entry key="app/src/main/res/layout/add_recipe_image_item.xml" value="0.1716485507246377" />
         <entry key="app/src/main/res/layout/custom_toolbar.xml" value="0.16894630192502533" />
         <entry key="app/src/main/res/layout/image_list.xml" value="0.16894630192502533" />
         <entry key="app/src/main/res/layout/image_picker_list.xml" value="0.1598731884057971" />

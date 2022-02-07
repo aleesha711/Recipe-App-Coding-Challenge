@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -20,7 +19,6 @@ import com.recipe.app.R
 import com.recipe.app.constants.RecipeConstants
 import com.recipe.app.databinding.ActivityRecipeAdditionBinding
 import com.recipe.app.features.addrecipe.enum.IntentCategory
-import com.recipe.app.features.addrecipe.interfaces.OnItemClickListener
 import com.recipe.app.features.addrecipe.viewmodel.RecipeAdditionViewModel
 import com.recipe.app.features.addrecipe.views.adapter.RecipeAdditionAdapter
 import com.recipe.app.utility.MediaUtil
@@ -28,7 +26,7 @@ import com.recipe.app.utility.PermissionUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RecipeAdditionActivity : AppCompatActivity(), OnItemClickListener {
+class RecipeAdditionActivity : AppCompatActivity() {
 
     private val recipeAdditionViewModel: RecipeAdditionViewModel by viewModels()
     private val binding by viewBinding(ActivityRecipeAdditionBinding::bind)
@@ -52,10 +50,23 @@ class RecipeAdditionActivity : AppCompatActivity(), OnItemClickListener {
     }
 
     private fun setRecyclerView() {
-        recipeAdditionAdapter = RecipeAdditionAdapter(this, recipeAdditionViewModel.recipeDataList)
-        recipeAdditionAdapter.setOnItemClickListener(this)
+        recipeAdditionAdapter =
+            RecipeAdditionAdapter(
+                this, recipeAdditionViewModel.recipeDataList, {
+                    requestPermissionOrGetIntent(it)?.let { pair ->
+                        observeCameraOrGalleryIntent(pair.first)
+                    }
+                },
+                {
+                    confirmDeleteImageDialog(it)
+                }
+            )
         with(binding) {
-            recyclerView.layoutManager = LinearLayoutManager(this@RecipeAdditionActivity, LinearLayoutManager.HORIZONTAL, false)
+            recyclerView.layoutManager = LinearLayoutManager(
+                this@RecipeAdditionActivity,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
             recyclerView.adapter = recipeAdditionAdapter
         }
     }
@@ -91,28 +102,24 @@ class RecipeAdditionActivity : AppCompatActivity(), OnItemClickListener {
         })
     }
 
-    private val cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            recipeAdditionViewModel.insertImageToList(MediaUtil.getCameraUri())
-        }
-    }
-
-    private val galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val uri = result.data?.data
-            uri?.let {
-                MediaUtil.getImageFilePath(it, contentResolver, callBack = { filePath ->
-                    recipeAdditionViewModel.checkImageForDuplication("file:$filePath")
-                })
+    private val cameraLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                recipeAdditionViewModel.insertImageToList(MediaUtil.getCameraUri())
             }
         }
-    }
 
-    override fun onItemClick(position: Int, v: View?) {
-        requestPermissionOrGetIntent(position)?.let { pair ->
-            observeCameraOrGalleryIntent(pair.first)
+    private val galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uri = result.data?.data
+                uri?.let {
+                    MediaUtil.getImageFilePath(it, contentResolver, callBack = { filePath ->
+                        recipeAdditionViewModel.checkImageForDuplication("file:$filePath")
+                    })
+                }
+            }
         }
-    }
 
     private fun openIntent(
         requestCode: Int,
@@ -135,7 +142,8 @@ class RecipeAdditionActivity : AppCompatActivity(), OnItemClickListener {
                 }
             }
             else -> {
-                Toast.makeText(this, getString(R.string.allow_permission_msg), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.allow_permission_msg), Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
@@ -175,10 +183,6 @@ class RecipeAdditionActivity : AppCompatActivity(), OnItemClickListener {
         }
     }
 
-    override fun onItemDelete(position: Int) {
-        confirmDeleteImageDialog(position)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val menuInflater = menuInflater
         menuInflater.inflate(R.menu.menu_add_recipe, menu)
@@ -188,7 +192,11 @@ class RecipeAdditionActivity : AppCompatActivity(), OnItemClickListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.save_recipe -> {
-                recipeAdditionViewModel.saveRecipe(binding.editTextTitle.text.toString(), binding.editTextDescription.text.toString(), intent)
+                recipeAdditionViewModel.saveRecipe(
+                    binding.editTextTitle.text.toString(),
+                    binding.editTextDescription.text.toString(),
+                    intent
+                )
                 true
             }
             else -> super.onOptionsItemSelected(item)
