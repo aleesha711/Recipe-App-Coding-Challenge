@@ -21,7 +21,6 @@ import com.recipe.app.db.entity.Recipe
 import com.recipe.app.features.addrecipe.views.activity.AddRecipeActivity
 import com.recipe.app.features.home.viewmodel.HomeViewModel
 import com.recipe.app.features.home.views.adapter.HomeAdapter
-import com.recipe.app.features.home.views.adapter.RecipeImageAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -35,7 +34,8 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
         setUpToolBar()
         val adapter = setupRecyclerview()
-        homeViewModel.getAllRecipes().observe(this, { recipes -> adapter.submitList(recipes) })
+        homeViewModel.recipes.observe(this, { recipes -> adapter.submitList(recipes) })
+        homeViewModel.newRecipe.observe(this, { recipe -> adapter.addNewRecipe(recipe) })
     }
 
     private fun setUpToolBar() {
@@ -45,8 +45,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerview(): HomeAdapter {
-        val recipeImageAdapter = RecipeImageAdapter(this@HomeActivity)
-        val adapter = HomeAdapter(recipeImageAdapter)
+        val adapter = HomeAdapter()
         with(binding) {
             recyclerView.layoutManager = LinearLayoutManager(this@HomeActivity)
             recyclerView.setHasFixedSize(true)

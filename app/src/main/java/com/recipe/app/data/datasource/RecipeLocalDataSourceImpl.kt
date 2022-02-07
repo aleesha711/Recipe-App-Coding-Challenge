@@ -1,6 +1,5 @@
 package com.recipe.app.data.datasource
 
-import androidx.lifecycle.LiveData
 import com.recipe.app.db.RecipeDatabase
 import com.recipe.app.db.entity.Recipe
 import javax.inject.Inject
@@ -13,7 +12,7 @@ class RecipeLocalDataSourceImpl @Inject constructor(
         recipeDatabase.recipeDao().insert(recipe)
     }
 
-    override suspend fun getAllRecipes(): LiveData<List<Recipe>> {
+    override suspend fun getAllRecipes(): List<Recipe>{
         return recipeDatabase.recipeDao().getAllRecipes()
     }
 }

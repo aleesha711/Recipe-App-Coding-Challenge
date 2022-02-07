@@ -1,28 +1,38 @@
 package com.recipe.app.features.home.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.recipe.app.data.RecipeRepository
 import com.recipe.app.db.entity.Recipe
+import com.recipe.app.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val recipeRepository: RecipeRepository) : ViewModel() {
+class HomeViewModel @Inject constructor(
+    @IoDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
+    private val recipeRepository: RecipeRepository
+) : ViewModel() {
 
-    fun insert(recipe: Recipe) = viewModelScope.launch {
-        recipeRepository.insert(recipe)
+    val recipes: MutableLiveData<List<Recipe>> = MutableLiveData()
+    val newRecipe: MutableLiveData<Recipe> = MutableLiveData()
+
+    init {
+        loadRecipes()
     }
 
-    fun getAllRecipes(): LiveData<List<Recipe>> {
-        var result: LiveData<List<Recipe>> = MutableLiveData()
-        viewModelScope.launch {
-            result = recipeRepository.getAllRecipes()
+    internal fun insert(recipe: Recipe) = viewModelScope.launch(ioDispatcher) {
+        recipeRepository.insert(recipe)
+        newRecipe.postValue(recipe)
+    }
+
+    internal fun loadRecipes() {
+        viewModelScope.launch(ioDispatcher) {
+            recipes.postValue(recipeRepository.getAllRecipes())
         }
-        return result
     }
 }
