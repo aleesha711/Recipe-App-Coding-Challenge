@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.recipe.app.data.RecipeRepository
 import com.recipe.app.db.entity.Recipe
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

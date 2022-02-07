@@ -12,17 +12,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.recipe.app.R
 import com.recipe.app.databinding.ActivityAddRecipeBinding
+import com.recipe.app.features.addrecipe.interfaces.OnItemClickListener
 import com.recipe.app.features.addrecipe.viewmodel.AddRecipeViewModel
 import com.recipe.app.features.addrecipe.views.adapter.AddRecipeAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddRecipeActivity : AppCompatActivity(), AddRecipeAdapter.OnItemClickListener {
+class AddRecipeActivity : AppCompatActivity(), OnItemClickListener {
 
     private val addRecipeViewModel: AddRecipeViewModel by viewModels()
     private val binding by viewBinding(ActivityAddRecipeBinding::bind)
@@ -46,7 +46,8 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeAdapter.OnItemClickListe
     }
 
     private fun setImageList() {
-        addRecipeAdapter = AddRecipeAdapter(applicationContext, addRecipeViewModel.imageList.value!!)
+        addRecipeAdapter =
+            addRecipeViewModel.recipeDataList.value?.let { AddRecipeAdapter(applicationContext, it) }
         addRecipeAdapter?.setOnItemClickListener(this)
         with(binding) {
             recyclerView.layoutManager = LinearLayoutManager(this@AddRecipeActivity, LinearLayoutManager.HORIZONTAL, false)
@@ -57,7 +58,7 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeAdapter.OnItemClickListe
     private fun setupObservers() {
         addRecipeViewModel.recipeError.observe(
             this,
-            Observer { status ->
+            { status ->
                 status?.let {
                     addRecipeViewModel.recipeError.value = null
                     Toast.makeText(this, getString(R.string.save_error_msg), Toast.LENGTH_SHORT).show()
@@ -67,7 +68,7 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeAdapter.OnItemClickListe
 
         addRecipeViewModel.permissionDenied.observe(
             this,
-            Observer { permission ->
+            { permission ->
                 permission?.let {
                     addRecipeViewModel.permissionDenied.value = null
                     Toast.makeText(this, getString(R.string.allow_permission_msg), Toast.LENGTH_SHORT).show()
@@ -83,27 +84,27 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeAdapter.OnItemClickListe
             }
         )
 
-        addRecipeViewModel.imagePickerListAdded.observe(
+        addRecipeViewModel.imageAdded.observe(
             this,
             {
                 addRecipeAdapter?.notifyDataSetChanged()
             }
         )
-        addRecipeViewModel.imageList.observe(
+        addRecipeViewModel.recipeDataList.observe(
             this,
             {
                 addRecipeAdapter?.notifyDataSetChanged()
             }
         )
 
-        addRecipeViewModel.addGalleryImage.observe(
+        addRecipeViewModel.intentGallery.observe(
             this,
             {
                 galleryLauncher.launch(it)
             }
         )
 
-        addRecipeViewModel.addCameraImage.observe(
+        addRecipeViewModel.intentCamera.observe(
             this,
             {
                 cameraLauncher.launch(it)
@@ -166,7 +167,6 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeAdapter.OnItemClickListe
     }
 
     private fun confirmDeleteImageDialog(position: Int) {
-
         val dialogBuilder = AlertDialog.Builder(this)
         dialogBuilder.setMessage(getString(R.string.delete_confirmation))
             .setCancelable(false)

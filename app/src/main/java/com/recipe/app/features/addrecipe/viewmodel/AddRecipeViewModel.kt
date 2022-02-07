@@ -16,7 +16,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.recipe.app.R
 import com.recipe.app.constants.RecipeConstants
 import com.recipe.app.constants.RecipeConstants.EXTRA_DESCRIPTION
 import com.recipe.app.constants.RecipeConstants.EXTRA_ID
@@ -24,8 +23,13 @@ import com.recipe.app.constants.RecipeConstants.EXTRA_IMAGES
 import com.recipe.app.constants.RecipeConstants.EXTRA_TITLE
 import com.recipe.app.constants.RecipeConstants.PICK_IMAGES
 import com.recipe.app.constants.RecipeConstants.REQUEST_IMAGE_CAPTURE
+import com.recipe.app.constants.RecipeConstants.chooserTitle
+import com.recipe.app.constants.RecipeConstants.placeholderIcons
 import com.recipe.app.db.entity.Recipe
 import com.recipe.app.features.addrecipe.enum.IntentCategory
+import com.recipe.app.features.addrecipe.model.Data
+import com.recipe.app.features.addrecipe.model.ImageChooser
+import com.recipe.app.features.addrecipe.views.adapter.AddRecipeAdapter
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -37,17 +41,14 @@ class AddRecipeViewModel : ViewModel() {
     private var currentPhotoPath: String? = null
     private var imageFile: File? = null
     private var selectedImageList: ArrayList<String> = ArrayList()
-    private var chooserTitle = arrayOf(RecipeConstants.CAMERA, RecipeConstants.FOLDER)
-    private var placeholderIcons =
-        intArrayOf(R.drawable.ic_camera_white_30dp, R.drawable.ic_folder_white_30dp)
 
     var recipeError = MutableLiveData<Boolean>()
     var recipeToSave: MutableLiveData<Intent> = MutableLiveData()
-    var imagePickerListAdded = MutableLiveData<Boolean>()
-    var imageList: MutableLiveData<ArrayList<Recipe>> = MutableLiveData()
+    var imageAdded = MutableLiveData<Boolean>()
+    var recipeDataList: MutableLiveData<ArrayList<Data>> = MutableLiveData()
     var permissionDenied = MutableLiveData<Boolean?>()
-    var addCameraImage = MutableLiveData<Intent>()
-    var addGalleryImage = MutableLiveData<Intent>()
+    var intentCamera = MutableLiveData<Intent>()
+    var intentGallery = MutableLiveData<Intent>()
 
     init {
         setImagePickerList()
@@ -125,8 +126,9 @@ class AddRecipeViewModel : ViewModel() {
     }
 
     internal fun unSelectImage(position: Int) {
+
         for (i in selectedImageList.indices) {
-            if (selectedImageList[i] == imageList.value!![position].uri) {
+            if (selectedImageList[i] == recipeDataList.value!![position].recipe?.uri) {
                 selectedImageList.removeAt(i)
                 break
             }
@@ -135,16 +137,16 @@ class AddRecipeViewModel : ViewModel() {
 
     // Add Camera and Folder in ArrayList
     private fun setImagePickerList() {
-        val placeholderList = arrayListOf<Recipe>()
+        val placeholderList = arrayListOf<Data>()
 
         for (i in placeholderIcons.indices) {
-            val imageModel = Recipe()
-            imageModel.imageSource = placeholderIcons[i]
-            imageModel.title = chooserTitle[i]
-            placeholderList.add(imageModel)
+
+            val imageModel = ImageChooser(chooserTitle[i], placeholderIcons[i])
+
+            val data = Data(AddRecipeAdapter.VIEW_TYPE_IMAGE_PICKER, imageModel, null)
+            placeholderList.add(data)
         }
-        imageList.value = placeholderList
-        imagePickerListAdded.value = true
+        recipeDataList.value = placeholderList
     }
 
     private fun requestPermission(context: Context, position: Int) {
@@ -187,17 +189,19 @@ class AddRecipeViewModel : ViewModel() {
         if (filePath != null) {
             imageModel.uri = filePath
         }
-        imageList.value?.add(SELECTED_IMAGES_INDEX, imageModel)
+
+        val data = Data(AddRecipeAdapter.VIEW_TYPE_IMAGE_LIST, null, imageModel)
+        recipeDataList.value?.add(data)
         filePath?.let { selectedImageList.add(it) }
-        imagePickerListAdded.value = true
+        imageAdded.value = true
     }
 
     private fun checkImage(filePath: String?) {
         // Check before adding a new image to ArrayList to avoid duplicate images
         if (!selectedImageList.contains(filePath)) {
-            for (pos in imageList.value!!.indices) {
-                if (imageList.value!![pos].uri.equals(filePath, ignoreCase = true)) {
-                    imageList.value?.removeAt(pos)
+            for (pos in recipeDataList.value!!.indices) {
+                if (recipeDataList.value!![pos].recipe?.uri.equals(filePath, ignoreCase = true)) {
+                    recipeDataList.value?.removeAt(pos)
                 }
             }
             addImage(filePath)
@@ -245,18 +249,14 @@ class AddRecipeViewModel : ViewModel() {
 
     internal fun observeCameraOrGalleryIntent(intent: Intent) {
         if (intent.action == ACTION_IMAGE_CAPTURE) {
-            addCameraImage.value = intent
+            intentCamera.value = intent
         } else if (intent.action == Intent.ACTION_OPEN_DOCUMENT) {
-            addGalleryImage.value = intent
+            intentGallery.value = intent
         }
     }
 
     internal fun addGalleryImages(data: Intent?, contentResolver: ContentResolver) {
         val uri = data?.data
         uri?.let { getImageFilePath(it, contentResolver) }
-    }
-
-    companion object {
-        const val SELECTED_IMAGES_INDEX = 2
     }
 }
