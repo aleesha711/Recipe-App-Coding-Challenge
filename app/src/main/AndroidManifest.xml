@@ -26,7 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.recipe.app.features.addrecipe.views.activity.AddRecipeActivity" android:exported="false"
+        <activity android:name="com.recipe.app.features.addrecipe.views.activity.RecipeAdditionActivity" android:exported="false"
             android:parentActivityName="com.recipe.app.features.home.views.activity.HomeActivity"/>
         <activity android:name="com.recipe.app.features.home.views.activity.HomeActivity" android:exported="false"/>
     </application>

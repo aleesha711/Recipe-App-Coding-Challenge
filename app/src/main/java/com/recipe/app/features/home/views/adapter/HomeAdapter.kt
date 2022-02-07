@@ -11,13 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.recipe.app.R
 import com.recipe.app.db.entity.Recipe
 import com.recipe.app.features.home.views.adapter.HomeAdapter.ViewHolder
-import kotlinx.android.synthetic.main.recyclerview_recipe_item.view.*
+import kotlinx.android.synthetic.main.home_recyclerview_recipe_item.view.*
 
 class HomeAdapter : ListAdapter<Recipe, ViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.recyclerview_recipe_item, parent, false)
+            .inflate(R.layout.home_recyclerview_recipe_item, parent, false)
         return ViewHolder(itemView)
     }
 

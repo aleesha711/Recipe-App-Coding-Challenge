@@ -6,10 +6,10 @@ import com.recipe.app.features.BaseTest
 import junit.framework.TestCase
 import org.junit.Test
 
-class AddRecipeViewModelTest : BaseTest() {
+class RecipeAdditionViewModelTest : BaseTest() {
 
     private val addRecipeViewModel by lazy {
-        AddRecipeViewModel()
+        RecipeAdditionViewModel()
     }
 
     @Test
@@ -17,6 +17,7 @@ class AddRecipeViewModelTest : BaseTest() {
         addRecipeViewModel.saveRecipe("", "", Intent())
         TestCase.assertEquals(true, addRecipeViewModel.showError.value)
     }
+/*
 
     @Test
     fun `test to open camera intent`() {
@@ -25,6 +26,7 @@ class AddRecipeViewModelTest : BaseTest() {
         addRecipeViewModel.observeCameraOrGalleryIntent(cameraIntent)
         TestCase.assertEquals(cameraIntent, addRecipeViewModel.intentCamera.value)
     }
+*/
 
   /*  @Test
     fun `test add only new recipe image to the list`() {

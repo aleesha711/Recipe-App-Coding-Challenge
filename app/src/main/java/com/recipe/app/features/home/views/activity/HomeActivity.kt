@@ -18,7 +18,7 @@ import com.recipe.app.constants.RecipeConstants.EXTRA_IMAGES
 import com.recipe.app.constants.RecipeConstants.EXTRA_TITLE
 import com.recipe.app.databinding.ActivityHomeBinding
 import com.recipe.app.db.entity.Recipe
-import com.recipe.app.features.addrecipe.views.activity.AddRecipeActivity
+import com.recipe.app.features.addrecipe.views.activity.RecipeAdditionActivity
 import com.recipe.app.features.home.viewmodel.HomeViewModel
 import com.recipe.app.features.home.views.adapter.HomeAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,14 +28,14 @@ class HomeActivity : AppCompatActivity() {
 
     private val binding by viewBinding(ActivityHomeBinding::bind)
     private val homeViewModel: HomeViewModel by viewModels()
+    private lateinit var adapter: HomeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         setUpToolBar()
-        val adapter = setupRecyclerview()
-        homeViewModel.recipes.observe(this, { recipes -> adapter.submitList(recipes) })
-        homeViewModel.newRecipe.observe(this, { recipe -> adapter.addNewRecipe(recipe) })
+        setupRecyclerview()
+        setupObservers()
     }
 
     private fun setUpToolBar() {
@@ -44,14 +44,18 @@ class HomeActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
     }
 
-    private fun setupRecyclerview(): HomeAdapter {
-        val adapter = HomeAdapter()
+    private fun setupObservers() {
+        homeViewModel.recipes.observe(this, { recipes -> adapter.submitList(recipes) })
+        homeViewModel.newRecipe.observe(this, { recipe -> adapter.addNewRecipe(recipe) })
+    }
+
+    private fun setupRecyclerview() {
+        adapter = HomeAdapter()
         with(binding) {
             recyclerView.layoutManager = LinearLayoutManager(this@HomeActivity)
             recyclerView.setHasFixedSize(true)
             recyclerView.adapter = adapter
         }
-        return adapter
     }
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -80,7 +84,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.addRecipe -> {
-                val intent = Intent(this@HomeActivity, AddRecipeActivity::class.java)
+                val intent = Intent(this@HomeActivity, RecipeAdditionActivity::class.java)
                 resultLauncher.launch(intent)
                 true
             }

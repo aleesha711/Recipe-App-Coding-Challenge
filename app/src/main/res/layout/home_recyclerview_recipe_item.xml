@@ -36,6 +36,6 @@
             android:layout_marginTop="@dimen/margin_1x"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/item_receipe_image" />
+            tools:listitem="@layout/home_item_receipe_image" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

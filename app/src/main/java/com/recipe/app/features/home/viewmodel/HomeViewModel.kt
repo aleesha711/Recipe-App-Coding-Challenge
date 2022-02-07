@@ -1,5 +1,6 @@
 package com.recipe.app.features.home.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,8 +19,14 @@ class HomeViewModel @Inject constructor(
     private val recipeRepository: RecipeRepository
 ) : ViewModel() {
 
-    val recipes: MutableLiveData<List<Recipe>> = MutableLiveData()
-    val newRecipe: MutableLiveData<Recipe> = MutableLiveData()
+    private val _recipes: MutableLiveData<List<Recipe>> = MutableLiveData()
+    private val _newRecipe: MutableLiveData<Recipe> = MutableLiveData()
+
+    val recipes: LiveData<List<Recipe>>
+        get() = _recipes
+
+    val newRecipe: LiveData<Recipe>
+        get() = _newRecipe
 
     init {
         loadRecipes()
@@ -27,12 +34,12 @@ class HomeViewModel @Inject constructor(
 
     internal fun insert(recipe: Recipe) = viewModelScope.launch(ioDispatcher) {
         recipeRepository.insert(recipe)
-        newRecipe.postValue(recipe)
+        _newRecipe.postValue(recipe)
     }
 
     internal fun loadRecipes() {
         viewModelScope.launch(ioDispatcher) {
-            recipes.postValue(recipeRepository.getAllRecipes())
+            _recipes.postValue(recipeRepository.getAllRecipes())
         }
     }
 }

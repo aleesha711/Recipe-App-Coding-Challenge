@@ -13,9 +13,8 @@ import com.recipe.app.features.addrecipe.model.Data
 import com.recipe.app.utility.image.ImageLoaderEntryPointAccessor
 import com.recipe.app.utility.image.abstraction.ImageLoader
 import com.recipe.app.utility.image.abstraction.ImageScaleType
-import java.util.*
 
-class AddRecipeAdapter(private val context: Context, private val imageList: ArrayList<Data>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RecipeAdditionAdapter(private val context: Context, private val imageList: List<Data>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         internal const val VIEW_TYPE_IMAGE_LIST = 0
@@ -32,7 +31,7 @@ class AddRecipeAdapter(private val context: Context, private val imageList: Arra
             )
         }
         return ImagePickerViewHolder(
-            LayoutInflater.from(context).inflate(R.layout.image_picker_list, parent, false)
+            LayoutInflater.from(context).inflate(R.layout.add_recipe_image_picker, parent, false)
         )
     }
 
@@ -53,7 +52,7 @@ class AddRecipeAdapter(private val context: Context, private val imageList: Arra
     }
 
     fun removeItem(position: Int) {
-        imageList.removeAt(position)
+        (imageList as ArrayList).removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, imageList.size)
     }

@@ -10,7 +10,7 @@ import com.recipe.app.R
 import com.recipe.app.utility.image.ImageLoaderEntryPointAccessor
 import com.recipe.app.utility.image.abstraction.ImageLoader
 import com.recipe.app.utility.image.abstraction.ImageScaleType
-import kotlinx.android.synthetic.main.item_receipe_image.view.*
+import kotlinx.android.synthetic.main.home_item_receipe_image.view.*
 
 class RecipeImageAdapter(context: Context) : RecyclerView.Adapter<RecipeImageAdapter.RecipeImageHolder>() {
     private val imageLoader: ImageLoader = ImageLoaderEntryPointAccessor.access(context).imageLoaderBareBoneProvider()
@@ -18,7 +18,7 @@ class RecipeImageAdapter(context: Context) : RecyclerView.Adapter<RecipeImageAda
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeImageHolder {
         val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_receipe_image, parent, false)
+            .inflate(R.layout.home_item_receipe_image, parent, false)
         return RecipeImageHolder(itemView)
     }
 
