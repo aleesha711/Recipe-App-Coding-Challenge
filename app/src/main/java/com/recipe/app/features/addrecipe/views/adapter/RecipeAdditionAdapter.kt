@@ -13,7 +13,12 @@ import com.recipe.app.utility.image.ImageLoaderEntryPointAccessor
 import com.recipe.app.utility.image.abstraction.ImageLoader
 import com.recipe.app.utility.image.abstraction.ImageScaleType
 
-class RecipeAdditionAdapter(private val context: Context, private val imageList: List<Data>, private val callback: (Int) -> Unit, private val deleteImage: (Int) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RecipeAdditionAdapter(
+    private val context: Context,
+    private val imageList: List<Data>,
+    private val callback: (Int) -> Unit,
+    private val deleteImage: (Int) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         internal const val VIEW_TYPE_IMAGE_LIST = 0
