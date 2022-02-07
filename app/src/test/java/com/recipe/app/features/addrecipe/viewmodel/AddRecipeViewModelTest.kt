@@ -15,7 +15,7 @@ class AddRecipeViewModelTest : BaseTest() {
     @Test
     fun `test save recipe shows error when title and description is empty`() {
         addRecipeViewModel.saveRecipe("", "", Intent())
-        TestCase.assertEquals(true, addRecipeViewModel.recipeError.value)
+        TestCase.assertEquals(true, addRecipeViewModel.showError.value)
     }
 
     @Test

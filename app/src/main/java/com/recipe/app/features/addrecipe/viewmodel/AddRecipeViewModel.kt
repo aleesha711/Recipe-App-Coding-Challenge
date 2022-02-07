@@ -38,23 +38,22 @@ import kotlin.collections.ArrayList
 
 class AddRecipeViewModel : ViewModel() {
 
-    private var currentPhotoPath: String? = null
-    private var imageFile: File? = null
+    internal val showError = MutableLiveData<Boolean>()
+    internal val saveRecipe: MutableLiveData<Intent> = MutableLiveData()
+    internal val imageAdded = MutableLiveData<Boolean>()
+    internal val recipeDataList: MutableLiveData<ArrayList<Data>> = MutableLiveData()
+    internal val permissionDenied = MutableLiveData<Boolean?>()
+    internal val intentCamera = MutableLiveData<Intent>()
+    internal val intentGallery = MutableLiveData<Intent>()
+    private var cameraPhotoUri: String? = null
     private var selectedImageList: ArrayList<String> = ArrayList()
-
-    var recipeError = MutableLiveData<Boolean>()
-    var recipeToSave: MutableLiveData<Intent> = MutableLiveData()
-    var imageAdded = MutableLiveData<Boolean>()
-    var recipeDataList: MutableLiveData<ArrayList<Data>> = MutableLiveData()
-    var permissionDenied = MutableLiveData<Boolean?>()
-    var intentCamera = MutableLiveData<Intent>()
-    var intentGallery = MutableLiveData<Intent>()
 
     init {
         setImagePickerList()
     }
 
     private fun createImageFile(): File? {
+        var imageFile: File? = null
         val dateTime = SimpleDateFormat(RecipeConstants.DATE_PATTERN).format(Date())
         val imageFileName = "IMG_" + dateTime + "_"
         val storageDir =
@@ -64,7 +63,7 @@ class AddRecipeViewModel : ViewModel() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        currentPhotoPath = "file:" + imageFile?.absolutePath
+        cameraPhotoUri = "file:" + imageFile?.absolutePath
         return imageFile
     }
 
@@ -181,7 +180,7 @@ class AddRecipeViewModel : ViewModel() {
     }
 
     internal fun addCameraImage() {
-        addImage(currentPhotoPath)
+        addImage(cameraPhotoUri)
     }
 
     private fun addImage(filePath: String?) {
@@ -197,7 +196,7 @@ class AddRecipeViewModel : ViewModel() {
     }
 
     private fun checkImage(filePath: String?) {
-        // Check before adding a new image to ArrayList to avoid duplicate images
+        // to avoid duplicate images
         if (!selectedImageList.contains(filePath)) {
             for (pos in recipeDataList.value!!.indices) {
                 if (recipeDataList.value!![pos].recipe?.uri.equals(filePath, ignoreCase = true)) {
@@ -232,7 +231,7 @@ class AddRecipeViewModel : ViewModel() {
         if (recipeTitle.trim { it <= ' ' }.isEmpty() || recipeDescription.trim { it <= ' ' }
             .isEmpty() || selectedImageList.isEmpty()
         ) {
-            recipeError.value = true
+            showError.value = true
             return
         }
 
@@ -244,7 +243,7 @@ class AddRecipeViewModel : ViewModel() {
         if (id != -1) {
             data.putExtra(EXTRA_ID, id)
         }
-        recipeToSave.value = data
+        saveRecipe.value = data
     }
 
     internal fun observeCameraOrGalleryIntent(intent: Intent) {

@@ -56,11 +56,11 @@ class AddRecipeActivity : AppCompatActivity(), OnItemClickListener {
     }
 
     private fun setupObservers() {
-        addRecipeViewModel.recipeError.observe(
+        addRecipeViewModel.showError.observe(
             this,
             { status ->
                 status?.let {
-                    addRecipeViewModel.recipeError.value = null
+                    addRecipeViewModel.showError.value = null
                     Toast.makeText(this, getString(R.string.save_error_msg), Toast.LENGTH_SHORT).show()
                 }
             }
@@ -76,7 +76,7 @@ class AddRecipeActivity : AppCompatActivity(), OnItemClickListener {
             }
         )
 
-        addRecipeViewModel.recipeToSave.observe(
+        addRecipeViewModel.saveRecipe.observe(
             this,
             { data ->
                 setResult(Activity.RESULT_OK, data)
