@@ -7,8 +7,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.recipe.app.constants.RecipeConstants
-import com.recipe.app.constants.RecipeConstants.chooserTitle
-import com.recipe.app.constants.RecipeConstants.placeholderIcons
+import com.recipe.app.constants.RecipeConstants.IMAGE_CHOOSER_ICONS
+import com.recipe.app.constants.RecipeConstants.IMAGE_CHOOSER_TITLES
 import com.recipe.app.db.entity.Recipe
 import com.recipe.app.features.addrecipe.enum.IntentCategory
 import com.recipe.app.features.addrecipe.views.adapter.RecipeDataItemWrapper
@@ -47,10 +47,10 @@ class RecipeAdditionViewModel : ViewModel() {
         addItemsForImagePicker()
     }
 
-    private fun addItemsForImagePicker() {
+    fun addItemsForImagePicker() {
         val placeholderList = arrayListOf<RecipeDataItemWrapper>()
-        for (i in placeholderIcons.indices) {
-            val imageModel = ImageChooser(chooserTitle[i], placeholderIcons[i])
+        for (i in IMAGE_CHOOSER_ICONS.indices) {
+            val imageModel = ImageChooser(IMAGE_CHOOSER_TITLES[i], IMAGE_CHOOSER_ICONS[i])
             val data = RecipeDataItemWrapper(VIEW_TYPE_IMAGE_PICKER, imageModel, null)
             placeholderList.add(data)
         }
@@ -101,6 +101,7 @@ class RecipeAdditionViewModel : ViewModel() {
         val data = Intent()
         data.putExtra(RecipeConstants.EXTRA_TITLE, recipeTitle)
         data.putExtra(RecipeConstants.EXTRA_DESCRIPTION, recipeDescription)
+       // data.putExtra(RecipeConstants.EXTRA_IMAGES, images)
         data.putStringArrayListExtra(RecipeConstants.EXTRA_IMAGES, images as ArrayList)
         val id = intent.getIntExtra(RecipeConstants.EXTRA_ID, -1)
         if (id != -1) {

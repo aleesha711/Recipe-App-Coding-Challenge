@@ -11,16 +11,16 @@ import com.recipe.app.utility.image.abstraction.ImageScaleType
 
 class ImageListViewHolder(
     itemView: View,
-    private val callback: (Int) -> Unit,
-    private val deleteImage: (Int) -> Unit
+    private val onItemClick: (Int) -> Unit,
+    private val onDeleteClick: (Int) -> Unit
 ) :
     RecyclerView.ViewHolder(itemView) {
     var image: ImageView = itemView.findViewById(R.id.image)
     private var imageViewDelete: ImageView = itemView.findViewById(R.id.imageViewDelete)
     private val imageLoader: ImageLoader = ImageLoaderEntryPointAccessor.access(itemView.context).imageLoaderBareBoneProvider()
     init {
-        itemView.setOnClickListener { callback.invoke(absoluteAdapterPosition) }
-        imageViewDelete.setOnClickListener { deleteImage.invoke(absoluteAdapterPosition) }
+        itemView.setOnClickListener { onItemClick.invoke(absoluteAdapterPosition) }
+        imageViewDelete.setOnClickListener { onDeleteClick.invoke(absoluteAdapterPosition) }
     }
 
     fun bindType(recipe: Recipe?) {

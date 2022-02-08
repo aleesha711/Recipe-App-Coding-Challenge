@@ -94,9 +94,9 @@ class RecipeAdditionActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        recipeAdditionViewModel.openIntent(this, requestCode, grantResults, callBack = { pair ->
+        recipeAdditionViewModel.openIntent(this, requestCode, grantResults) { pair ->
             pair?.let { openCameraOrGalleryIntent(it.first) }
-        })
+        }
     }
 
     private val cameraLauncher =
@@ -112,7 +112,8 @@ class RecipeAdditionActivity : AppCompatActivity() {
                 val uri = result.data?.data
                 uri?.let {
                     MediaUtil.getImageFilePath(it, contentResolver, callBack = { filePath ->
-                        recipeAdditionViewModel.checkImageForDuplication("file:$filePath")
+                        recipeAdditionViewModel.insertImageToList("file:$filePath")
+                     //   recipeAdditionViewModel.checkImageForDuplication("file:$filePath")
                     })
                 }
             }

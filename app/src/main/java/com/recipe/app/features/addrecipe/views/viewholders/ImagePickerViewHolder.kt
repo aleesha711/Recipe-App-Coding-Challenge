@@ -7,13 +7,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.recipe.app.R
 import com.recipe.app.features.addrecipe.model.ImageChooser
 
-class ImagePickerViewHolder(itemView: View, private val callback: (Int) -> Unit) :
+class ImagePickerViewHolder(itemView: View, private val onItemClick: (Int) -> Unit) :
     RecyclerView.ViewHolder(itemView) {
     var image: ImageView = itemView.findViewById(R.id.image)
     var title: TextView = itemView.findViewById(R.id.title)
 
     init {
-        itemView.setOnClickListener { callback.invoke(absoluteAdapterPosition) }
+        itemView.setOnClickListener { onItemClick.invoke(absoluteAdapterPosition) }
     }
 
     fun bindType(imageChooser: ImageChooser?) {

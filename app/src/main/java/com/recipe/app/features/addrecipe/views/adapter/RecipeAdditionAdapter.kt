@@ -10,8 +10,8 @@ import com.recipe.app.features.addrecipe.views.viewholders.ImagePickerViewHolder
 
 class RecipeAdditionAdapter(
     private val itemWrapperList: List<RecipeDataItemWrapper>,
-    private val callback: (Int) -> Unit,
-    private val deleteImage: (Int) -> Unit
+    private val onItemClick: (Int) -> Unit,
+    private val onDeleteClick: (Int) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -19,13 +19,13 @@ class RecipeAdditionAdapter(
             return ImageListViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.add_recipe_image_item, parent, false),
-                callback, deleteImage
+                onItemClick, onDeleteClick
             )
         }
         return ImagePickerViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.add_recipe_image_picker, parent, false),
-            callback
+            onItemClick
         )
     }
 

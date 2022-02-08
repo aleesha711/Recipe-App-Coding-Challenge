@@ -11,9 +11,7 @@ object RecipeConstants {
     const val EXTRA_DESCRIPTION = "EXTRA_DESCRIPTION"
     const val EXTRA_IMAGES = "EXTRA_IMAGES"
     const val DATE_PATTERN = "yyyyMMdd_HHmmss"
-    const val CAMERA = "Camera"
-    const val FOLDER = "Folder"
-    val chooserTitle = arrayOf(RecipeConstants.CAMERA, RecipeConstants.FOLDER)
-    val placeholderIcons =
+    val IMAGE_CHOOSER_TITLES = arrayOf("Camera", "Folder")
+    val IMAGE_CHOOSER_ICONS =
         intArrayOf(R.drawable.ic_camera_white_30dp, R.drawable.ic_folder_white_30dp)
 }
