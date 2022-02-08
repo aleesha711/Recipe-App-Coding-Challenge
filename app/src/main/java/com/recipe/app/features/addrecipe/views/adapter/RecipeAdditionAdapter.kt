@@ -1,99 +1,53 @@
 package com.recipe.app.features.addrecipe.views.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.recipe.app.R
-import com.recipe.app.features.addrecipe.model.Data
-import com.recipe.app.utility.image.ImageLoaderEntryPointAccessor
-import com.recipe.app.utility.image.abstraction.ImageLoader
-import com.recipe.app.utility.image.abstraction.ImageScaleType
+import com.recipe.app.features.addrecipe.views.adapter.RecipeDataItemWrapper.Companion.VIEW_TYPE_IMAGE_LIST
+import com.recipe.app.features.addrecipe.views.viewholders.ImageListViewHolder
+import com.recipe.app.features.addrecipe.views.viewholders.ImagePickerViewHolder
 
 class RecipeAdditionAdapter(
-    private val context: Context,
-    private val imageList: List<Data>,
+    private val itemWrapperList: List<RecipeDataItemWrapper>,
     private val callback: (Int) -> Unit,
     private val deleteImage: (Int) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    companion object {
-        internal const val VIEW_TYPE_IMAGE_LIST = 0
-        internal const val VIEW_TYPE_IMAGE_PICKER = 1
-    }
-
-    private val imageLoader: ImageLoader = ImageLoaderEntryPointAccessor.access(context).imageLoaderBareBoneProvider()
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == VIEW_TYPE_IMAGE_LIST) {
             return ImageListViewHolder(
-                LayoutInflater.from(context).inflate(R.layout.add_recipe_image_item, parent, false)
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.add_recipe_image_item, parent, false),
+                callback, deleteImage
             )
         }
         return ImagePickerViewHolder(
-            LayoutInflater.from(context).inflate(R.layout.add_recipe_image_picker, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.add_recipe_image_picker, parent, false),
+            callback
         )
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (imageList[position].viewType == VIEW_TYPE_IMAGE_LIST) {
-            (holder as ImageListViewHolder).bind(position)
+        if (itemWrapperList[position].viewType == VIEW_TYPE_IMAGE_LIST) {
+            (holder as ImageListViewHolder).bindType(itemWrapperList[position].recipe)
         } else {
-            (holder as ImagePickerViewHolder).bind(position)
+            (holder as ImagePickerViewHolder).bindType(itemWrapperList[position].imageChooser)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return imageList[position].viewType
+        return itemWrapperList[position].viewType
     }
 
     override fun getItemCount(): Int {
-        return imageList.size
+        return itemWrapperList.size
     }
 
     fun removeItem(position: Int) {
-        (imageList as ArrayList).removeAt(position)
+        (itemWrapperList as ArrayList).removeAt(position)
         notifyItemRemoved(position)
-        notifyItemRangeChanged(position, imageList.size)
-    }
-
-    private inner class ImageListViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
-        var image: ImageView = itemView.findViewById(R.id.image)
-        private var imageViewDelete: ImageView = itemView.findViewById(R.id.imageViewDelete)
-
-        init {
-            itemView.setOnClickListener { callback.invoke(absoluteAdapterPosition) }
-            imageViewDelete.setOnClickListener { deleteImage.invoke(absoluteAdapterPosition) }
-        }
-
-        fun bind(position: Int) {
-            imageList[position].recipe?.let {
-                imageLoader.load(
-                    image,
-                    it.uri,
-                    ImageScaleType.CENTER_CROP,
-                    R.drawable.ic_add
-                )
-            }
-        }
-    }
-
-    private inner class ImagePickerViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
-        var image: ImageView = itemView.findViewById(R.id.image)
-        var title: TextView = itemView.findViewById(R.id.title)
-
-        init {
-            itemView.setOnClickListener { callback.invoke(absoluteAdapterPosition) }
-        }
-
-        fun bind(position: Int) {
-            imageList[position].imageChooser?.placeholder?.let { image.setImageResource(it) }
-            title.text = imageList[position].imageChooser?.title
-        }
+        notifyItemRangeChanged(position, itemWrapperList.size)
     }
 }

@@ -11,9 +11,10 @@ import com.recipe.app.constants.RecipeConstants.chooserTitle
 import com.recipe.app.constants.RecipeConstants.placeholderIcons
 import com.recipe.app.db.entity.Recipe
 import com.recipe.app.features.addrecipe.enum.IntentCategory
-import com.recipe.app.features.addrecipe.model.Data
+import com.recipe.app.features.addrecipe.views.adapter.RecipeDataItemWrapper
 import com.recipe.app.features.addrecipe.model.ImageChooser
-import com.recipe.app.features.addrecipe.views.adapter.RecipeAdditionAdapter
+import com.recipe.app.features.addrecipe.views.adapter.RecipeDataItemWrapper.Companion.VIEW_TYPE_IMAGE_LIST
+import com.recipe.app.features.addrecipe.views.adapter.RecipeDataItemWrapper.Companion.VIEW_TYPE_IMAGE_PICKER
 import com.recipe.app.utility.MediaUtil
 import com.recipe.app.utility.PermissionUtil
 import kotlin.collections.ArrayList
@@ -24,7 +25,7 @@ class RecipeAdditionViewModel : ViewModel() {
     private val _saveRecipe: MutableLiveData<Intent> = MutableLiveData()
     private val _notifyImageAdded = MutableLiveData<Boolean>()
     private val _showPermissionError = MutableLiveData<Boolean>()
-    private var _recipeDataList: MutableList<Data> = ArrayList()
+    private var _recipeRecipeDataItemWrapperList: MutableList<RecipeDataItemWrapper> = ArrayList()
     private var images = mutableListOf<String>()
 
     val showError: LiveData<Boolean>
@@ -36,8 +37,8 @@ class RecipeAdditionViewModel : ViewModel() {
     val saveRecipe: LiveData<Intent>
         get() = _saveRecipe
 
-    val recipeDataList: List<Data>
-        get() = _recipeDataList
+    val recipeRecipeDataItemWrapperList: List<RecipeDataItemWrapper>
+        get() = _recipeRecipeDataItemWrapperList
 
     val showPermissionError: LiveData<Boolean>
         get() = _showPermissionError
@@ -47,19 +48,19 @@ class RecipeAdditionViewModel : ViewModel() {
     }
 
     private fun addItemsForImagePicker() {
-        val placeholderList = arrayListOf<Data>()
+        val placeholderList = arrayListOf<RecipeDataItemWrapper>()
         for (i in placeholderIcons.indices) {
             val imageModel = ImageChooser(chooserTitle[i], placeholderIcons[i])
-            val data = Data(RecipeAdditionAdapter.VIEW_TYPE_IMAGE_PICKER, imageModel, null)
+            val data = RecipeDataItemWrapper(VIEW_TYPE_IMAGE_PICKER, imageModel, null)
             placeholderList.add(data)
         }
 
-        _recipeDataList = placeholderList
+        _recipeRecipeDataItemWrapperList = placeholderList
     }
 
     fun removeImageFromList(position: Int) {
         for (i in images.indices) {
-            if (images[i] == _recipeDataList[position].recipe?.uri) {
+            if (images[i] == _recipeRecipeDataItemWrapperList[position].recipe?.uri) {
                 images.removeAt(i)
                 break
             }
@@ -72,17 +73,17 @@ class RecipeAdditionViewModel : ViewModel() {
             imageModel.uri = filePath
         }
 
-        val data = Data(RecipeAdditionAdapter.VIEW_TYPE_IMAGE_LIST, null, imageModel)
-        _recipeDataList.add(data)
+        val data = RecipeDataItemWrapper(VIEW_TYPE_IMAGE_LIST, null, imageModel)
+        _recipeRecipeDataItemWrapperList.add(data)
         filePath?.let { images.add(it) }
         _notifyImageAdded.value = true
     }
 
     fun checkImageForDuplication(filePath: String?) {
         if (!images.contains(filePath)) {
-            for (pos in _recipeDataList.indices) {
-                if (_recipeDataList[pos].recipe?.uri.equals(filePath, ignoreCase = true)) {
-                    _recipeDataList.removeAt(pos)
+            for (pos in _recipeRecipeDataItemWrapperList.indices) {
+                if (_recipeRecipeDataItemWrapperList[pos].recipe?.uri.equals(filePath, ignoreCase = true)) {
+                    _recipeRecipeDataItemWrapperList.removeAt(pos)
                 }
             }
             insertImageToList(filePath)
@@ -135,7 +136,6 @@ class RecipeAdditionViewModel : ViewModel() {
         }
     }
 
-
     fun requestPermissionOrGetIntent(position: Int, context: Context): Pair<Intent, Int>? {
         when {
             PermissionUtil.shouldRequestPermission(context) -> {
@@ -151,10 +151,10 @@ class RecipeAdditionViewModel : ViewModel() {
     private fun getIntent(position: Int): Pair<Intent, Int>? {
         when (position) {
             IntentCategory.ACTION_IMAGE_CAPTURE.value -> {
-                return MediaUtil.takePicture()
+                return MediaUtil.capturePicture()
             }
             IntentCategory.PICK_IMAGES.value -> {
-                return MediaUtil.getPickImageIntent()
+                return MediaUtil.pickImagesFromGallery()
             }
         }
         return null

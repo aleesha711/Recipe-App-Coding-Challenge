@@ -36,7 +36,7 @@ object MediaUtil {
         }
     }
 
-    fun takePicture(): Pair<Intent, Int> {
+    fun capturePicture(): Pair<Intent, Int> {
         val builder = StrictMode.VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -47,7 +47,7 @@ object MediaUtil {
         return Pair(cameraIntent, RecipeConstants.REQUEST_IMAGE_CAPTURE)
     }
 
-    fun getPickImageIntent(): Pair<Intent, Int> {
+    fun pickImagesFromGallery(): Pair<Intent, Int> {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intent.type = "image/*"
         val mimeTypes = arrayOf("image/jpeg", "image/png")

@@ -48,7 +48,7 @@ class RecipeAdditionActivity : AppCompatActivity() {
     private fun setRecyclerView() {
         recipeAdditionAdapter =
             RecipeAdditionAdapter(
-                this, recipeAdditionViewModel.recipeDataList, {
+                recipeAdditionViewModel.recipeRecipeDataItemWrapperList, {
                     recipeAdditionViewModel.requestPermissionOrGetIntent(it, this)?.let { pair ->
                         openCameraOrGalleryIntent(pair.first)
                     }
