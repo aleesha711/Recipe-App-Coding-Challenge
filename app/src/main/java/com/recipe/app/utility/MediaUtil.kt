@@ -50,6 +50,8 @@ object MediaUtil {
     fun getPickImageIntent(): Pair<Intent, Int> {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intent.type = "image/*"
+        val mimeTypes = arrayOf("image/jpeg", "image/png")
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         return Pair(intent, RecipeConstants.PICK_IMAGES)
     }

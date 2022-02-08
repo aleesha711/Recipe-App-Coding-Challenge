@@ -3,7 +3,6 @@ package com.recipe.app.features.addrecipe.views.activity
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
@@ -16,13 +15,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.recipe.app.R
-import com.recipe.app.constants.RecipeConstants
 import com.recipe.app.databinding.ActivityRecipeAdditionBinding
-import com.recipe.app.features.addrecipe.enum.IntentCategory
 import com.recipe.app.features.addrecipe.viewmodel.RecipeAdditionViewModel
 import com.recipe.app.features.addrecipe.views.adapter.RecipeAdditionAdapter
 import com.recipe.app.utility.MediaUtil
-import com.recipe.app.utility.PermissionUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -53,8 +49,8 @@ class RecipeAdditionActivity : AppCompatActivity() {
         recipeAdditionAdapter =
             RecipeAdditionAdapter(
                 this, recipeAdditionViewModel.recipeDataList, {
-                    requestPermissionOrGetIntent(it)?.let { pair ->
-                        observeCameraOrGalleryIntent(pair.first)
+                    recipeAdditionViewModel.requestPermissionOrGetIntent(it, this)?.let { pair ->
+                        openCameraOrGalleryIntent(pair.first)
                     }
                 },
                 {
@@ -85,6 +81,11 @@ class RecipeAdditionActivity : AppCompatActivity() {
         recipeAdditionViewModel.notifyImageAdded.observe(this, {
             recipeAdditionAdapter.notifyDataSetChanged()
         })
+
+        recipeAdditionViewModel.showPermissionError.observe(this, {
+            Toast.makeText(this, getString(R.string.allow_permission_msg), Toast.LENGTH_SHORT)
+                .show()
+        })
     }
 
     override fun onRequestPermissionsResult(
@@ -93,12 +94,8 @@ class RecipeAdditionActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        openIntent(requestCode, grantResults, callBack = { pair ->
-            if (pair == null) {
-                setRecyclerView()
-            } else {
-                observeCameraOrGalleryIntent(pair.first)
-            }
+        recipeAdditionViewModel.openIntent(this, requestCode, grantResults, callBack = { pair ->
+            pair?.let { openCameraOrGalleryIntent(it.first) }
         })
     }
 
@@ -121,68 +118,6 @@ class RecipeAdditionActivity : AppCompatActivity() {
             }
         }
 
-    private fun openIntent(
-        requestCode: Int,
-        grantResults: IntArray,
-        callBack: (pair: Pair<Intent, Int>?) -> Unit
-    ) {
-        when {
-            requestCode == RecipeConstants.STORAGE_PERMISSION && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED -> {
-                callBack(null)
-            }
-            requestCode == RecipeConstants.REQUEST_IMAGE_CAPTURE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED -> {
-                requestPermissionOrGetIntent(IntentCategory.ACTION_IMAGE_CAPTURE.value)
-                    ?.let { pair ->
-                        callBack(pair)
-                    }
-            }
-            requestCode == RecipeConstants.PICK_IMAGES && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED -> {
-                requestPermissionOrGetIntent(IntentCategory.PICK_IMAGES.value)?.let { pair ->
-                    callBack(pair)
-                }
-            }
-            else -> {
-                Toast.makeText(this, getString(R.string.allow_permission_msg), Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
-    }
-
-    private fun requestPermissionOrGetIntent(position: Int): Pair<Intent, Int>? {
-        when {
-            PermissionUtil.shouldRequestPermission(this) -> {
-                PermissionUtil.requestPermission(this, position)
-            }
-            else -> {
-                return getIntent(position)
-            }
-        }
-        return null
-    }
-
-    private fun getIntent(position: Int): Pair<Intent, Int>? {
-        when (position) {
-            IntentCategory.ACTION_IMAGE_CAPTURE.value -> {
-                return MediaUtil.takePicture()
-            }
-            IntentCategory.PICK_IMAGES.value -> {
-                return MediaUtil.getPickImageIntent()
-            }
-        }
-        return null
-    }
-
-    private fun observeCameraOrGalleryIntent(intent: Intent) {
-        when (intent.action) {
-            MediaStore.ACTION_IMAGE_CAPTURE -> {
-                cameraLauncher.launch(intent)
-            }
-            Intent.ACTION_OPEN_DOCUMENT -> {
-                galleryLauncher.launch(intent)
-            }
-        }
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val menuInflater = menuInflater
         menuInflater.inflate(R.menu.menu_add_recipe, menu)
@@ -200,6 +135,17 @@ class RecipeAdditionActivity : AppCompatActivity() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun openCameraOrGalleryIntent(intent: Intent) {
+        when (intent.action) {
+            MediaStore.ACTION_IMAGE_CAPTURE -> {
+                cameraLauncher.launch(intent)
+            }
+            Intent.ACTION_OPEN_DOCUMENT -> {
+                galleryLauncher.launch(intent)
+            }
         }
     }
 

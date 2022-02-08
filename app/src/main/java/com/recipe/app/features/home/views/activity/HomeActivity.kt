@@ -61,13 +61,15 @@ class HomeActivity : AppCompatActivity() {
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
-            val item = data?.getStringExtra(EXTRA_DESCRIPTION)?.let {
-                data.getStringArrayListExtra(EXTRA_IMAGES)?.let { uriList ->
-                    Recipe(
-                        data.getStringExtra(EXTRA_TITLE)!!,
-                        it,
-                        images = uriList
-                    )
+            val item = data?.getStringExtra(EXTRA_TITLE)?.let { title ->
+                data.getStringExtra(EXTRA_DESCRIPTION)?.let { description ->
+                    data.getStringArrayListExtra(EXTRA_IMAGES)?.let { images ->
+                        Recipe(
+                            title = title,
+                            description = description,
+                            images = images
+                        )
+                    }
                 }
             }
             item?.let { homeViewModel.insert(it) }
