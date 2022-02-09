@@ -17,7 +17,7 @@ class RecipeRepositoryImplTest : BaseTest() {
 
     private val recipeLocalDataSource: Lazy<RecipeLocalDataSource> = mockk(relaxed = true)
 
-    private val recipe = Recipe("title", "description", arrayListOf(), "uri")
+    private val recipe = Recipe("title", "description", arrayListOf())
 
     @ExperimentalCoroutinesApi
     private val recipeRepositoryImpl by lazy {

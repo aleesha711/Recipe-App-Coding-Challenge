@@ -19,7 +19,7 @@ import java.io.IOException
 class RecipeDatabaseTest : TestCase() {
 
     private lateinit var appDatabase: RecipeDatabase
-    private val recipe = Recipe("title", "description", arrayListOf(), "uri")
+    private val recipe = Recipe("title", "description", arrayListOf())
     private lateinit var recipeDao: RecipeDao
 
     @Before

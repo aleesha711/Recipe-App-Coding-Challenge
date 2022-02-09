@@ -49,8 +49,8 @@ class RecipeAdditionViewModelTest : BaseTest() {
     }
 
 
-    private fun buildImagePickerList(): ArrayList<RecipeDataItemWrapper> {
-        val placeholderList = arrayListOf<RecipeDataItemWrapper>()
+    private fun buildImagePickerList(): Set<RecipeDataItemWrapper> {
+        val placeholderList = LinkedHashSet<RecipeDataItemWrapper>()
         for (i in RecipeConstants.IMAGE_CHOOSER_ICONS.indices) {
             val imageModel = ImageChooser(RecipeConstants.IMAGE_CHOOSER_TITLES[i], RecipeConstants.IMAGE_CHOOSER_ICONS[i])
             val data = RecipeDataItemWrapper(RecipeDataItemWrapper.VIEW_TYPE_IMAGE_PICKER, imageModel, null)
