@@ -7,10 +7,6 @@ import com.recipe.app.R
 import com.recipe.app.features.addrecipe.views.adapter.RecipeDataItemWrapper.Companion.VIEW_TYPE_IMAGE_LIST
 import com.recipe.app.features.addrecipe.views.viewholders.ImageListViewHolder
 import com.recipe.app.features.addrecipe.views.viewholders.ImagePickerViewHolder
-import androidx.recyclerview.widget.DiffUtil
-
-
-
 
 class RecipeAdditionAdapter(
     private val itemWrapperList: Set<RecipeDataItemWrapper>,
