@@ -23,11 +23,11 @@ class ImageListViewHolder(
         imageViewDelete.setOnClickListener { onDeleteClick.invoke(absoluteAdapterPosition) }
     }
 
-    fun bindType(recipe: Recipe?) {
-        recipe?.let {
+    fun bindType(uri: String?) {
+        uri?.let {
             imageLoader.load(
                 image,
-                it.uri,
+                it,
                 ImageScaleType.CENTER_CROP,
                 R.drawable.ic_add
             )

@@ -31,7 +31,7 @@ class RecipeAdditionAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (itemWrapperList[position].viewType == VIEW_TYPE_IMAGE_LIST) {
-            (holder as ImageListViewHolder).bindType(itemWrapperList[position].recipe)
+            (holder as ImageListViewHolder).bindType(itemWrapperList[position].imageUri)
         } else {
             (holder as ImagePickerViewHolder).bindType(itemWrapperList[position].imageChooser)
         }

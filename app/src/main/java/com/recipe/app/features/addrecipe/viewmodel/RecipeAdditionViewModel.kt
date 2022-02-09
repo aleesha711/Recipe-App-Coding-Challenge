@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import com.recipe.app.constants.RecipeConstants
 import com.recipe.app.constants.RecipeConstants.IMAGE_CHOOSER_ICONS
 import com.recipe.app.constants.RecipeConstants.IMAGE_CHOOSER_TITLES
-import com.recipe.app.db.entity.Recipe
 import com.recipe.app.features.addrecipe.enum.IntentCategory
 import com.recipe.app.features.addrecipe.views.adapter.RecipeDataItemWrapper
 import com.recipe.app.features.addrecipe.model.ImageChooser
@@ -60,7 +59,7 @@ class RecipeAdditionViewModel : ViewModel() {
 
     fun removeImageFromList(position: Int) {
         for (i in images.indices) {
-            if (images[i] == _recipeRecipeDataItemWrapperList[position].recipe?.uri) {
+            if (images[i] == _recipeRecipeDataItemWrapperList[position].imageUri) {
                 images.removeAt(i)
                 break
             }
@@ -68,18 +67,13 @@ class RecipeAdditionViewModel : ViewModel() {
     }
 
     fun insertImageToList(filePath: String?) {
-        val imageModel = Recipe()
-        if (filePath != null) {
-            imageModel.uri = filePath
-        }
-
-        val data = RecipeDataItemWrapper(VIEW_TYPE_IMAGE_LIST, null, imageModel)
+        val data = RecipeDataItemWrapper(VIEW_TYPE_IMAGE_LIST, null, filePath)
         _recipeRecipeDataItemWrapperList.add(data)
         filePath?.let { images.add(it) }
         _notifyImageAdded.value = true
     }
 
-    fun checkImageForDuplication(filePath: String?) {
+/*    fun checkImageForDuplication(filePath: String?) {
         if (!images.contains(filePath)) {
             for (pos in _recipeRecipeDataItemWrapperList.indices) {
                 if (_recipeRecipeDataItemWrapperList[pos].recipe?.uri.equals(filePath, ignoreCase = true)) {
@@ -88,7 +82,7 @@ class RecipeAdditionViewModel : ViewModel() {
             }
             insertImageToList(filePath)
         }
-    }
+    }*/
 
     fun saveRecipe(recipeTitle: String, recipeDescription: String, intent: Intent) {
         if (recipeTitle.trim { it <= ' ' }.isEmpty() || recipeDescription.trim { it <= ' ' }

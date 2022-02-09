@@ -7,8 +7,7 @@ import androidx.room.PrimaryKey
 data class Recipe(
     var title: String = "",
     var description: String = "",
-    var images: List<String> = ArrayList(),
-    var uri: String = ""
+    var images: List<String> = ArrayList()
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
