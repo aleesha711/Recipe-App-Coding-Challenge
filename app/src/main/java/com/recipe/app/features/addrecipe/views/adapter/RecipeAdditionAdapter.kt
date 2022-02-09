@@ -47,7 +47,7 @@ class RecipeAdditionAdapter(
 
     fun updateList(items: Set<RecipeDataItemWrapper>) {
         (itemWrapperList as HashSet).addAll(items)
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0, items.size)
     }
 
     fun removeItem(position: Int) {
