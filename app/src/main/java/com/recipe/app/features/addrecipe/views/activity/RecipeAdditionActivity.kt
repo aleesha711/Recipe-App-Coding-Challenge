@@ -114,7 +114,6 @@ class RecipeAdditionActivity : AppCompatActivity() {
                 uri?.let {
                     MediaUtil.getImageFilePath(it, contentResolver, callBack = { filePath ->
                         recipeAdditionViewModel.insertImageToList("file:$filePath")
-                     //   recipeAdditionViewModel.checkImageForDuplication("file:$filePath")
                     })
                 }
             }
