@@ -24,8 +24,8 @@ class RecipeAdditionViewModel : ViewModel() {
     private val _saveRecipe: MutableLiveData<Intent> = MutableLiveData()
     private val _notifyImageAdded = MutableLiveData<Boolean>()
     private val _showPermissionError = MutableLiveData<Boolean>()
-    private var _recipeRecipeDataItemWrapperList: MutableList<RecipeDataItemWrapper> = ArrayList()
-    private var images = mutableListOf<String>()
+    private var _recipeRecipeDataItemWrapperList: LinkedHashSet<RecipeDataItemWrapper> = linkedSetOf()
+    private var images = LinkedHashSet<String>()
 
     val showError: LiveData<Boolean>
         get() = _showError
@@ -36,7 +36,7 @@ class RecipeAdditionViewModel : ViewModel() {
     val saveRecipe: LiveData<Intent>
         get() = _saveRecipe
 
-    val recipeRecipeDataItemWrapperList: List<RecipeDataItemWrapper>
+    val recipeRecipeDataItemWrapperList: Set<RecipeDataItemWrapper>
         get() = _recipeRecipeDataItemWrapperList
 
     val showPermissionError: LiveData<Boolean>
@@ -47,7 +47,7 @@ class RecipeAdditionViewModel : ViewModel() {
     }
 
     fun addItemsForImagePicker() {
-        val placeholderList = arrayListOf<RecipeDataItemWrapper>()
+        val placeholderList = linkedSetOf<RecipeDataItemWrapper>()
         for (i in IMAGE_CHOOSER_ICONS.indices) {
             val imageModel = ImageChooser(IMAGE_CHOOSER_TITLES[i], IMAGE_CHOOSER_ICONS[i])
             val data = RecipeDataItemWrapper(VIEW_TYPE_IMAGE_PICKER, imageModel, null)
@@ -59,8 +59,8 @@ class RecipeAdditionViewModel : ViewModel() {
 
     fun removeImageFromList(position: Int) {
         for (i in images.indices) {
-            if (images[i] == _recipeRecipeDataItemWrapperList[position].imageUri) {
-                images.removeAt(i)
+            if (images.elementAt(i) == _recipeRecipeDataItemWrapperList.elementAt(position).imageUri) {
+                images.remove(images.elementAt(i))
                 break
             }
         }
@@ -73,17 +73,6 @@ class RecipeAdditionViewModel : ViewModel() {
         _notifyImageAdded.value = true
     }
 
-/*    fun checkImageForDuplication(filePath: String?) {
-        if (!images.contains(filePath)) {
-            for (pos in _recipeRecipeDataItemWrapperList.indices) {
-                if (_recipeRecipeDataItemWrapperList[pos].recipe?.uri.equals(filePath, ignoreCase = true)) {
-                    _recipeRecipeDataItemWrapperList.removeAt(pos)
-                }
-            }
-            insertImageToList(filePath)
-        }
-    }*/
-
     fun saveRecipe(recipeTitle: String, recipeDescription: String, intent: Intent) {
         if (recipeTitle.trim { it <= ' ' }.isEmpty() || recipeDescription.trim { it <= ' ' }
             .isEmpty() || images.isEmpty()
@@ -95,8 +84,7 @@ class RecipeAdditionViewModel : ViewModel() {
         val data = Intent()
         data.putExtra(RecipeConstants.EXTRA_TITLE, recipeTitle)
         data.putExtra(RecipeConstants.EXTRA_DESCRIPTION, recipeDescription)
-       // data.putExtra(RecipeConstants.EXTRA_IMAGES, images)
-        data.putStringArrayListExtra(RecipeConstants.EXTRA_IMAGES, images as ArrayList)
+        data.putStringArrayListExtra(RecipeConstants.EXTRA_IMAGES, ArrayList(images))
         val id = intent.getIntExtra(RecipeConstants.EXTRA_ID, -1)
         if (id != -1) {
             data.putExtra(RecipeConstants.EXTRA_ID, id)

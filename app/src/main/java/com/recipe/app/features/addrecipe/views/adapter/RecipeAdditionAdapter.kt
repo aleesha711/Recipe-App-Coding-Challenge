@@ -7,9 +7,13 @@ import com.recipe.app.R
 import com.recipe.app.features.addrecipe.views.adapter.RecipeDataItemWrapper.Companion.VIEW_TYPE_IMAGE_LIST
 import com.recipe.app.features.addrecipe.views.viewholders.ImageListViewHolder
 import com.recipe.app.features.addrecipe.views.viewholders.ImagePickerViewHolder
+import androidx.recyclerview.widget.DiffUtil
+
+
+
 
 class RecipeAdditionAdapter(
-    private val itemWrapperList: List<RecipeDataItemWrapper>,
+    private val itemWrapperList: Set<RecipeDataItemWrapper>,
     private val onItemClick: (Int) -> Unit,
     private val onDeleteClick: (Int) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -30,23 +34,28 @@ class RecipeAdditionAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (itemWrapperList[position].viewType == VIEW_TYPE_IMAGE_LIST) {
-            (holder as ImageListViewHolder).bindType(itemWrapperList[position].imageUri)
+        if (itemWrapperList.elementAt(position).viewType == VIEW_TYPE_IMAGE_LIST) {
+            (holder as ImageListViewHolder).bindType(itemWrapperList.elementAt(position).imageUri)
         } else {
-            (holder as ImagePickerViewHolder).bindType(itemWrapperList[position].imageChooser)
+            (holder as ImagePickerViewHolder).bindType(itemWrapperList.elementAt(position).imageChooser)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return itemWrapperList[position].viewType
+        return itemWrapperList.elementAt(position).viewType
     }
 
     override fun getItemCount(): Int {
         return itemWrapperList.size
     }
 
+    fun addItem(items: Set<RecipeDataItemWrapper>) {
+        (itemWrapperList as HashSet).addAll(items)
+        notifyDataSetChanged()
+    }
+
     fun removeItem(position: Int) {
-        (itemWrapperList as ArrayList).removeAt(position)
+        (itemWrapperList as HashSet).remove(itemWrapperList.elementAt(position))
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, itemWrapperList.size)
     }
