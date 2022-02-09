@@ -45,7 +45,7 @@ class RecipeAdditionAdapter(
         return itemWrapperList.size
     }
 
-    fun addItem(items: Set<RecipeDataItemWrapper>) {
+    fun updateList(items: Set<RecipeDataItemWrapper>) {
         (itemWrapperList as HashSet).addAll(items)
         notifyDataSetChanged()
     }

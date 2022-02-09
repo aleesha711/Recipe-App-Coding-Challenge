@@ -79,8 +79,7 @@ class RecipeAdditionActivity : AppCompatActivity() {
         })
 
         recipeAdditionViewModel.notifyImageAdded.observe(this, {
-            recipeAdditionAdapter.addItem(recipeAdditionViewModel.recipeRecipeDataItemWrapperList)
-            recipeAdditionAdapter.notifyDataSetChanged()
+            recipeAdditionAdapter.updateList(recipeAdditionViewModel.recipeRecipeDataItemWrapperList)
         })
 
         recipeAdditionViewModel.showPermissionError.observe(this, {
