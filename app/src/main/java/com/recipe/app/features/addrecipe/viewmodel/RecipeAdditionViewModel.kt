@@ -24,8 +24,8 @@ class RecipeAdditionViewModel : ViewModel() {
     private val _saveRecipe: MutableLiveData<Intent> = MutableLiveData()
     private val _notifyImageAdded = MutableLiveData<Boolean>()
     private val _showPermissionError = MutableLiveData<Boolean>()
-    private var _recipeItems: LinkedHashSet<RecipeImageItemWrapper> = linkedSetOf()
-    private var images = LinkedHashSet<String>()
+    private var _recipeImageItems: LinkedHashSet<RecipeImageItemWrapper> = linkedSetOf()
+    private var imagesUri = LinkedHashSet<String>()
 
     val showError: LiveData<Boolean>
         get() = _showError
@@ -36,8 +36,8 @@ class RecipeAdditionViewModel : ViewModel() {
     val saveRecipe: LiveData<Intent>
         get() = _saveRecipe
 
-    val recipeItems: Set<RecipeImageItemWrapper>
-        get() = _recipeItems
+    val recipeImageItems: Set<RecipeImageItemWrapper>
+        get() = _recipeImageItems
 
     val showPermissionError: LiveData<Boolean>
         get() = _showPermissionError
@@ -54,13 +54,13 @@ class RecipeAdditionViewModel : ViewModel() {
             placeholderList.add(data)
         }
 
-        _recipeItems = placeholderList
+        _recipeImageItems = placeholderList
     }
 
     fun removeImageFromList(position: Int) {
-        for (i in images.indices) {
-            if (images.elementAt(i) == _recipeItems.elementAt(position).imageUri) {
-                images.remove(images.elementAt(i))
+        for (i in imagesUri.indices) {
+            if (imagesUri.elementAt(i) == _recipeImageItems.elementAt(position).imageUri) {
+                imagesUri.remove(imagesUri.elementAt(i))
                 break
             }
         }
@@ -68,14 +68,14 @@ class RecipeAdditionViewModel : ViewModel() {
 
     fun insertImageToList(filePath: String?) {
         val data = RecipeImageItemWrapper(VIEW_TYPE_IMAGE_LIST, null, filePath)
-        _recipeItems.add(data)
-        filePath?.let { images.add(it) }
+        _recipeImageItems.add(data)
+        filePath?.let { imagesUri.add(it) }
         _notifyImageAdded.value = true
     }
 
     fun saveRecipe(recipeTitle: String, recipeDescription: String, intent: Intent) {
         if (recipeTitle.trim { it <= ' ' }.isEmpty() || recipeDescription.trim { it <= ' ' }
-            .isEmpty() || images.isEmpty()
+            .isEmpty() || imagesUri.isEmpty()
         ) {
             _showError.value = true
             return
@@ -84,7 +84,7 @@ class RecipeAdditionViewModel : ViewModel() {
         val data = Intent()
         data.putExtra(RecipeConstants.EXTRA_TITLE, recipeTitle)
         data.putExtra(RecipeConstants.EXTRA_DESCRIPTION, recipeDescription)
-        data.putStringArrayListExtra(RecipeConstants.EXTRA_IMAGES, ArrayList(images))
+        data.putStringArrayListExtra(RecipeConstants.EXTRA_IMAGES, ArrayList(imagesUri))
         val id = intent.getIntExtra(RecipeConstants.EXTRA_ID, -1)
         if (id != -1) {
             data.putExtra(RecipeConstants.EXTRA_ID, id)

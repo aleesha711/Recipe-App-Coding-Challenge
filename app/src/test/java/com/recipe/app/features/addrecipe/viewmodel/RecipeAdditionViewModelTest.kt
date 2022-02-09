@@ -33,7 +33,7 @@ class RecipeAdditionViewModelTest : BaseTest() {
     @Test
     fun `test default items for image picker`() {
         addRecipeViewModel.setDefaultItems()
-        TestCase.assertEquals(buildImagePickerList(), addRecipeViewModel.recipeItems)
+        TestCase.assertEquals(buildImagePickerList(), addRecipeViewModel.recipeImageItems)
     }
 
     @Test
