@@ -4,12 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.recipe.app.R
-import com.recipe.app.features.addrecipe.views.adapter.RecipeDataItemWrapper.Companion.VIEW_TYPE_IMAGE_LIST
+import com.recipe.app.features.addrecipe.views.adapter.RecipeImageItemWrapper.Companion.VIEW_TYPE_IMAGE_LIST
 import com.recipe.app.features.addrecipe.views.viewholders.ImageListViewHolder
 import com.recipe.app.features.addrecipe.views.viewholders.ImagePickerViewHolder
 
-class RecipeAdditionAdapter(
-    private val items: Set<RecipeDataItemWrapper>,
+class RecipeImageAdapter(
+    private val items: Set<RecipeImageItemWrapper>,
     private val onItemClick: (Int) -> Unit,
     private val onDeleteClick: (Int) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -45,7 +45,7 @@ class RecipeAdditionAdapter(
         return items.size
     }
 
-    fun updateList(items: Set<RecipeDataItemWrapper>) {
+    fun updateList(items: Set<RecipeImageItemWrapper>) {
         (this.items as HashSet).addAll(items)
         notifyItemRangeChanged(0, items.size)
     }

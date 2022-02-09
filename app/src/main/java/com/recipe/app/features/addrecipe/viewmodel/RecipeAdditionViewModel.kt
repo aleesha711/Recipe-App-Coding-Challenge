@@ -10,10 +10,10 @@ import com.recipe.app.constants.RecipeConstants
 import com.recipe.app.constants.RecipeConstants.IMAGE_CHOOSER_ICONS
 import com.recipe.app.constants.RecipeConstants.IMAGE_CHOOSER_TITLES
 import com.recipe.app.features.addrecipe.enum.IntentCategory
-import com.recipe.app.features.addrecipe.views.adapter.RecipeDataItemWrapper
+import com.recipe.app.features.addrecipe.views.adapter.RecipeImageItemWrapper
 import com.recipe.app.features.addrecipe.model.ImagePicker
-import com.recipe.app.features.addrecipe.views.adapter.RecipeDataItemWrapper.Companion.VIEW_TYPE_IMAGE_LIST
-import com.recipe.app.features.addrecipe.views.adapter.RecipeDataItemWrapper.Companion.VIEW_TYPE_IMAGE_PICKER
+import com.recipe.app.features.addrecipe.views.adapter.RecipeImageItemWrapper.Companion.VIEW_TYPE_IMAGE_LIST
+import com.recipe.app.features.addrecipe.views.adapter.RecipeImageItemWrapper.Companion.VIEW_TYPE_IMAGE_PICKER
 import com.recipe.app.utility.MediaUtil
 import com.recipe.app.utility.PermissionUtil
 import kotlin.collections.ArrayList
@@ -24,7 +24,7 @@ class RecipeAdditionViewModel : ViewModel() {
     private val _saveRecipe: MutableLiveData<Intent> = MutableLiveData()
     private val _notifyImageAdded = MutableLiveData<Boolean>()
     private val _showPermissionError = MutableLiveData<Boolean>()
-    private var _recipeItems: LinkedHashSet<RecipeDataItemWrapper> = linkedSetOf()
+    private var _recipeItems: LinkedHashSet<RecipeImageItemWrapper> = linkedSetOf()
     private var images = LinkedHashSet<String>()
 
     val showError: LiveData<Boolean>
@@ -36,7 +36,7 @@ class RecipeAdditionViewModel : ViewModel() {
     val saveRecipe: LiveData<Intent>
         get() = _saveRecipe
 
-    val recipeItems: Set<RecipeDataItemWrapper>
+    val recipeItems: Set<RecipeImageItemWrapper>
         get() = _recipeItems
 
     val showPermissionError: LiveData<Boolean>
@@ -47,10 +47,10 @@ class RecipeAdditionViewModel : ViewModel() {
     }
 
     fun setDefaultItems() {
-        val placeholderList = linkedSetOf<RecipeDataItemWrapper>()
+        val placeholderList = linkedSetOf<RecipeImageItemWrapper>()
         for (i in IMAGE_CHOOSER_ICONS.indices) {
             val imagePicker = ImagePicker(IMAGE_CHOOSER_TITLES[i], IMAGE_CHOOSER_ICONS[i])
-            val data = RecipeDataItemWrapper(VIEW_TYPE_IMAGE_PICKER, imagePicker, null)
+            val data = RecipeImageItemWrapper(VIEW_TYPE_IMAGE_PICKER, imagePicker, null)
             placeholderList.add(data)
         }
 
@@ -67,7 +67,7 @@ class RecipeAdditionViewModel : ViewModel() {
     }
 
     fun insertImageToList(filePath: String?) {
-        val data = RecipeDataItemWrapper(VIEW_TYPE_IMAGE_LIST, null, filePath)
+        val data = RecipeImageItemWrapper(VIEW_TYPE_IMAGE_LIST, null, filePath)
         _recipeItems.add(data)
         filePath?.let { images.add(it) }
         _notifyImageAdded.value = true

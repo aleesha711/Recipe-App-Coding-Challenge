@@ -17,7 +17,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.recipe.app.R
 import com.recipe.app.databinding.ActivityRecipeAdditionBinding
 import com.recipe.app.features.addrecipe.viewmodel.RecipeAdditionViewModel
-import com.recipe.app.features.addrecipe.views.adapter.RecipeAdditionAdapter
+import com.recipe.app.features.addrecipe.views.adapter.RecipeImageAdapter
 import com.recipe.app.utility.MediaUtil
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,7 +26,7 @@ class RecipeAdditionActivity : AppCompatActivity() {
 
     private val recipeAdditionViewModel: RecipeAdditionViewModel by viewModels()
     private val binding by viewBinding(ActivityRecipeAdditionBinding::bind)
-    private lateinit var recipeAdditionAdapter: RecipeAdditionAdapter
+    private lateinit var recipeImageAdapter: RecipeImageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +46,8 @@ class RecipeAdditionActivity : AppCompatActivity() {
     }
 
     private fun setRecyclerView() {
-        recipeAdditionAdapter =
-            RecipeAdditionAdapter(
+        recipeImageAdapter =
+            RecipeImageAdapter(
                 recipeAdditionViewModel.recipeItems, {
                     recipeAdditionViewModel.requestPermissionOrGetIntent(it, this)?.let { pair ->
                         openCameraOrGalleryIntent(pair.first)
@@ -63,7 +63,7 @@ class RecipeAdditionActivity : AppCompatActivity() {
                 LinearLayoutManager.HORIZONTAL,
                 false
             )
-            recyclerView.adapter = recipeAdditionAdapter
+            recyclerView.adapter = recipeImageAdapter
         }
     }
 
@@ -79,7 +79,7 @@ class RecipeAdditionActivity : AppCompatActivity() {
         })
 
         recipeAdditionViewModel.notifyImageAdded.observe(this, {
-            recipeAdditionAdapter.updateList(recipeAdditionViewModel.recipeItems)
+            recipeImageAdapter.updateList(recipeAdditionViewModel.recipeItems)
         })
 
         recipeAdditionViewModel.showPermissionError.observe(this, {
@@ -155,7 +155,7 @@ class RecipeAdditionActivity : AppCompatActivity() {
             .setCancelable(false)
             .setPositiveButton(getString(R.string.delete)) { _, _ ->
                 recipeAdditionViewModel.removeImageFromList(position)
-                recipeAdditionAdapter.removeItem(position)
+                recipeImageAdapter.removeItem(position)
             }.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                 dialog.cancel()
             }
