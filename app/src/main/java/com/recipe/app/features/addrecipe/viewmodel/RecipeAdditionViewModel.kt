@@ -49,8 +49,8 @@ class RecipeAdditionViewModel : ViewModel() {
     fun setDefaultItems() {
         val placeholderList = linkedSetOf<RecipeDataItemWrapper>()
         for (i in IMAGE_CHOOSER_ICONS.indices) {
-            val imageModel = ImagePicker(IMAGE_CHOOSER_TITLES[i], IMAGE_CHOOSER_ICONS[i])
-            val data = RecipeDataItemWrapper(VIEW_TYPE_IMAGE_PICKER, imageModel, null)
+            val imagePicker = ImagePicker(IMAGE_CHOOSER_TITLES[i], IMAGE_CHOOSER_ICONS[i])
+            val data = RecipeDataItemWrapper(VIEW_TYPE_IMAGE_PICKER, imagePicker, null)
             placeholderList.add(data)
         }
 
