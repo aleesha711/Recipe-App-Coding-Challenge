@@ -11,7 +11,7 @@ import com.recipe.app.constants.RecipeConstants.IMAGE_CHOOSER_ICONS
 import com.recipe.app.constants.RecipeConstants.IMAGE_CHOOSER_TITLES
 import com.recipe.app.features.addrecipe.enum.IntentCategory
 import com.recipe.app.features.addrecipe.views.adapter.RecipeDataItemWrapper
-import com.recipe.app.features.addrecipe.model.ImageChooser
+import com.recipe.app.features.addrecipe.model.ImagePicker
 import com.recipe.app.features.addrecipe.views.adapter.RecipeDataItemWrapper.Companion.VIEW_TYPE_IMAGE_LIST
 import com.recipe.app.features.addrecipe.views.adapter.RecipeDataItemWrapper.Companion.VIEW_TYPE_IMAGE_PICKER
 import com.recipe.app.utility.MediaUtil
@@ -43,13 +43,13 @@ class RecipeAdditionViewModel : ViewModel() {
         get() = _showPermissionError
 
     init {
-        addItemsForImagePicker()
+        setDefaultItems()
     }
 
-    fun addItemsForImagePicker() {
+    fun setDefaultItems() {
         val placeholderList = linkedSetOf<RecipeDataItemWrapper>()
         for (i in IMAGE_CHOOSER_ICONS.indices) {
-            val imageModel = ImageChooser(IMAGE_CHOOSER_TITLES[i], IMAGE_CHOOSER_ICONS[i])
+            val imageModel = ImagePicker(IMAGE_CHOOSER_TITLES[i], IMAGE_CHOOSER_ICONS[i])
             val data = RecipeDataItemWrapper(VIEW_TYPE_IMAGE_PICKER, imageModel, null)
             placeholderList.add(data)
         }

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.recipe.app.constants.RecipeConstants
 import com.recipe.app.features.BaseTest
-import com.recipe.app.features.addrecipe.model.ImageChooser
+import com.recipe.app.features.addrecipe.model.ImagePicker
 import com.recipe.app.features.addrecipe.views.adapter.RecipeDataItemWrapper
 import io.mockk.mockk
 import junit.framework.TestCase
@@ -32,7 +32,7 @@ class RecipeAdditionViewModelTest : BaseTest() {
 
     @Test
     fun `test default items for image picker`() {
-        addRecipeViewModel.addItemsForImagePicker()
+        addRecipeViewModel.setDefaultItems()
         TestCase.assertEquals(buildImagePickerList(), addRecipeViewModel.recipeRecipeDataItemWrapperList)
     }
 
@@ -52,7 +52,7 @@ class RecipeAdditionViewModelTest : BaseTest() {
     private fun buildImagePickerList(): Set<RecipeDataItemWrapper> {
         val placeholderList = LinkedHashSet<RecipeDataItemWrapper>()
         for (i in RecipeConstants.IMAGE_CHOOSER_ICONS.indices) {
-            val imageModel = ImageChooser(RecipeConstants.IMAGE_CHOOSER_TITLES[i], RecipeConstants.IMAGE_CHOOSER_ICONS[i])
+            val imageModel = ImagePicker(RecipeConstants.IMAGE_CHOOSER_TITLES[i], RecipeConstants.IMAGE_CHOOSER_ICONS[i])
             val data = RecipeDataItemWrapper(RecipeDataItemWrapper.VIEW_TYPE_IMAGE_PICKER, imageModel, null)
             placeholderList.add(data)
         }

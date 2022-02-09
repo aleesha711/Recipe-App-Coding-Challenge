@@ -5,7 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.recipe.app.R
-import com.recipe.app.features.addrecipe.model.ImageChooser
+import com.recipe.app.features.addrecipe.model.ImagePicker
 
 class ImagePickerViewHolder(itemView: View, private val onItemClick: (Int) -> Unit) :
     RecyclerView.ViewHolder(itemView) {
@@ -16,8 +16,8 @@ class ImagePickerViewHolder(itemView: View, private val onItemClick: (Int) -> Un
         itemView.setOnClickListener { onItemClick.invoke(absoluteAdapterPosition) }
     }
 
-    fun bindType(imageChooser: ImageChooser?) {
-        imageChooser?.placeholder?.let { image.setImageResource(it) }
-        title.text = imageChooser?.title
+    fun bindType(imagePicker: ImagePicker?) {
+        imagePicker?.placeholder?.let { image.setImageResource(it) }
+        title.text = imagePicker?.title
     }
 }

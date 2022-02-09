@@ -33,7 +33,7 @@ class RecipeAdditionAdapter(
         if (itemWrapperList.elementAt(position).viewType == VIEW_TYPE_IMAGE_LIST) {
             (holder as ImageListViewHolder).bindType(itemWrapperList.elementAt(position).imageUri)
         } else {
-            (holder as ImagePickerViewHolder).bindType(itemWrapperList.elementAt(position).imageChooser)
+            (holder as ImagePickerViewHolder).bindType(itemWrapperList.elementAt(position).imagePicker)
         }
     }
 
