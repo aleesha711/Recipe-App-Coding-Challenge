@@ -9,7 +9,7 @@ import com.recipe.app.features.addrecipe.views.viewholders.ImageListViewHolder
 import com.recipe.app.features.addrecipe.views.viewholders.ImagePickerViewHolder
 
 class RecipeAdditionAdapter(
-    private val itemWrapperList: Set<RecipeDataItemWrapper>,
+    private val items: Set<RecipeDataItemWrapper>,
     private val onItemClick: (Int) -> Unit,
     private val onDeleteClick: (Int) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -30,29 +30,29 @@ class RecipeAdditionAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (itemWrapperList.elementAt(position).viewType == VIEW_TYPE_IMAGE_LIST) {
-            (holder as ImageListViewHolder).bindType(itemWrapperList.elementAt(position).imageUri)
+        if (items.elementAt(position).viewType == VIEW_TYPE_IMAGE_LIST) {
+            (holder as ImageListViewHolder).bindType(items.elementAt(position).imageUri)
         } else {
-            (holder as ImagePickerViewHolder).bindType(itemWrapperList.elementAt(position).imagePicker)
+            (holder as ImagePickerViewHolder).bindType(items.elementAt(position).imagePicker)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return itemWrapperList.elementAt(position).viewType
+        return items.elementAt(position).viewType
     }
 
     override fun getItemCount(): Int {
-        return itemWrapperList.size
+        return items.size
     }
 
     fun updateList(items: Set<RecipeDataItemWrapper>) {
-        (itemWrapperList as HashSet).addAll(items)
+        (this.items as HashSet).addAll(items)
         notifyItemRangeChanged(0, items.size)
     }
 
     fun removeItem(position: Int) {
-        (itemWrapperList as HashSet).remove(itemWrapperList.elementAt(position))
+        (items as HashSet).remove(items.elementAt(position))
         notifyItemRemoved(position)
-        notifyItemRangeChanged(position, itemWrapperList.size)
+        notifyItemRangeChanged(position, items.size)
     }
 }

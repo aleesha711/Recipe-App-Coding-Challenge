@@ -48,7 +48,7 @@ class RecipeAdditionActivity : AppCompatActivity() {
     private fun setRecyclerView() {
         recipeAdditionAdapter =
             RecipeAdditionAdapter(
-                recipeAdditionViewModel.recipeRecipeDataItemWrapperList, {
+                recipeAdditionViewModel.recipeItems, {
                     recipeAdditionViewModel.requestPermissionOrGetIntent(it, this)?.let { pair ->
                         openCameraOrGalleryIntent(pair.first)
                     }
@@ -79,7 +79,7 @@ class RecipeAdditionActivity : AppCompatActivity() {
         })
 
         recipeAdditionViewModel.notifyImageAdded.observe(this, {
-            recipeAdditionAdapter.updateList(recipeAdditionViewModel.recipeRecipeDataItemWrapperList)
+            recipeAdditionAdapter.updateList(recipeAdditionViewModel.recipeItems)
         })
 
         recipeAdditionViewModel.showPermissionError.observe(this, {

@@ -24,7 +24,7 @@ class RecipeAdditionViewModel : ViewModel() {
     private val _saveRecipe: MutableLiveData<Intent> = MutableLiveData()
     private val _notifyImageAdded = MutableLiveData<Boolean>()
     private val _showPermissionError = MutableLiveData<Boolean>()
-    private var _recipeRecipeDataItemWrapperList: LinkedHashSet<RecipeDataItemWrapper> = linkedSetOf()
+    private var _recipeItems: LinkedHashSet<RecipeDataItemWrapper> = linkedSetOf()
     private var images = LinkedHashSet<String>()
 
     val showError: LiveData<Boolean>
@@ -36,8 +36,8 @@ class RecipeAdditionViewModel : ViewModel() {
     val saveRecipe: LiveData<Intent>
         get() = _saveRecipe
 
-    val recipeRecipeDataItemWrapperList: Set<RecipeDataItemWrapper>
-        get() = _recipeRecipeDataItemWrapperList
+    val recipeItems: Set<RecipeDataItemWrapper>
+        get() = _recipeItems
 
     val showPermissionError: LiveData<Boolean>
         get() = _showPermissionError
@@ -54,12 +54,12 @@ class RecipeAdditionViewModel : ViewModel() {
             placeholderList.add(data)
         }
 
-        _recipeRecipeDataItemWrapperList = placeholderList
+        _recipeItems = placeholderList
     }
 
     fun removeImageFromList(position: Int) {
         for (i in images.indices) {
-            if (images.elementAt(i) == _recipeRecipeDataItemWrapperList.elementAt(position).imageUri) {
+            if (images.elementAt(i) == _recipeItems.elementAt(position).imageUri) {
                 images.remove(images.elementAt(i))
                 break
             }
@@ -68,7 +68,7 @@ class RecipeAdditionViewModel : ViewModel() {
 
     fun insertImageToList(filePath: String?) {
         val data = RecipeDataItemWrapper(VIEW_TYPE_IMAGE_LIST, null, filePath)
-        _recipeRecipeDataItemWrapperList.add(data)
+        _recipeItems.add(data)
         filePath?.let { images.add(it) }
         _notifyImageAdded.value = true
     }
