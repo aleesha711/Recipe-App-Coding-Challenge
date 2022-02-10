@@ -5,7 +5,7 @@ import com.recipe.app.R
 object RecipeConstants {
     const val REQUEST_IMAGE_CAPTURE = 1
     const val PICK_IMAGES = 2
-    const val STORAGE_PERMISSION: Int = 100
+    const val STORAGE_PERMISSION = 100
     const val EXTRA_ID = "EXTRA_ID"
     const val EXTRA_TITLE = "EXTRA_TITLE"
     const val EXTRA_DESCRIPTION = "EXTRA_DESCRIPTION"
