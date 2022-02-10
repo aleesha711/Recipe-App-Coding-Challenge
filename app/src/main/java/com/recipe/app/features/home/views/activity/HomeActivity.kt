@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.recipe.app.R
@@ -39,9 +38,10 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setUpToolBar() {
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.title = resources.getString(R.string.your_recipes)
-        setSupportActionBar(toolbar)
+        with(binding) {
+            toolbar.title = resources.getString(R.string.your_recipes)
+            setSupportActionBar(toolbar)
+        }
     }
 
     private fun setupObservers() {
