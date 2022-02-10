@@ -17,7 +17,7 @@ class HomeViewModelTest : BaseTest() {
     @MockK
     private lateinit var recipeRepository: RecipeRepository
 
-    private val recipe = Recipe("title", "description", arrayListOf())
+    private val recipe = Recipe("title", "description", listOf())
 
     @ExperimentalCoroutinesApi
     private val homeViewModel by lazy {
